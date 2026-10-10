@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: RecipeTest2
   m_EditorClassIdentifier: Assembly-CSharp::ChefGame.Recipes.Recipe
   difficulty: 1
-  recipeName: 
+  recipeName: me
   recipeLines: []
   isActive: 0
   nextRecipe: {fileID: 0}

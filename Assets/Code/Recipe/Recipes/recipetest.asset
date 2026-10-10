@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da31793f916993c438d4b7e5ee6d3b45, type: 3}
   m_Name: recipetest
   m_EditorClassIdentifier: Assembly-CSharp::ChefGame.Recipes.Recipe
-  difficulty: 1
-  recipeName: 
+  difficulty: 3
+  recipeName: you
   recipeLines: []
   isActive: 0
   nextRecipe: {fileID: 0}

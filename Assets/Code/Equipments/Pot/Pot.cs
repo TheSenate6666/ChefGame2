@@ -5,7 +5,6 @@ using ChefGame.Items;
 using ChefGame.Recipes;
 
 
-
 namespace ChefGame.Equipments
 {
     public class Pot : MonoBehaviour
@@ -19,9 +18,20 @@ namespace ChefGame.Equipments
         private Dictionary<IngredientType,float> currentIngredients = new Dictionary<IngredientType, float>();
         #endregion
         
-        private bool isLidCoverClosed = false;
+        private bool isLidCoverClosed;
 
         #region Unity Functions
+
+        private void OnEnable()
+        {
+            Stove.OnStoveToggled += ToggleLidCover;
+        }
+
+        private void OnDisable()
+        {
+            Stove.OnStoveToggled -= ToggleLidCover;
+        }
+
         private void Start()
         {
             if (activeRecipe != null)
@@ -62,11 +72,6 @@ namespace ChefGame.Equipments
 
         public void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag("LidCover"))
-            {
-                if (!isLidCoverClosed) {CloseTheLidCover();}
-            }
-            
             IngredientInstance ingredient = other.GetComponent<IngredientInstance>();
             if (ingredient != null &&  !isLidCoverClosed)
             {
@@ -99,10 +104,15 @@ namespace ChefGame.Equipments
             Destroy(ingredient.gameObject);
         }
 
-        private void CloseTheLidCover()
+        private void ToggleLidCover(bool isLidCovered)
         {
-            isLidCoverClosed = true;
+            isLidCoverClosed = isLidCovered;
             activeRecipe.isActive = false;
+            CheckNextRecipe();    
+        }
+        
+        private void CheckNextRecipe()
+        {
             if (activeRecipe.nextRecipe == null) {Debug.Log("No recipes left");}
             activeRecipe = activeRecipe.nextRecipe;
             LoadRecipe(activeRecipe);
