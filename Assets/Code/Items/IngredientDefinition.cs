@@ -13,7 +13,11 @@ namespace ChefGame.Items
         [SerializeField] private GameObject cutEffectPrefab;
         [SerializeField] private List<GameObject> cutResultPrefabs = new List<GameObject>();
 
+        [SerializeField] private IngredientType ingredientType = IngredientType.None;
+
         public override ItemCategory Category => ItemCategory.Ingredient;
+
+        public IngredientType GetIngredientType() => ingredientType;
         public virtual bool CanBeCut => canBeCut;
         public GameObject CutEffectPrefab => cutEffectPrefab;
         public IReadOnlyList<GameObject> CutResultPrefabs => cutResultPrefabs;

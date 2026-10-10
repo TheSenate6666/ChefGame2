@@ -15,4 +15,12 @@ namespace ChefGame.Items
         TomatoHalf = 2,
         Knife = 3
     }
+
+    public enum IngredientType
+    {
+        None = 0,
+        Tomato = 1,
+        TomatoHalf = 2,
+       
+    }
 }
