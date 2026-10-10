@@ -57,7 +57,7 @@ namespace ChefGame.Items
         /// <summary>As above, with an optional per-call result list; null uses this asset's configured list.</summary>
         public bool GettingCut(GameObject ingredientInstance, IReadOnlyList<GameObject> prefabsToSpawn)
         {
-            if (!canBeCut || ingredientInstance == null)
+            if (!CanBeCut || ingredientInstance == null)
                 return false;
 
             IReadOnlyList<GameObject> results = prefabsToSpawn ?? cutResultPrefabs;
@@ -97,7 +97,7 @@ namespace ChefGame.Items
         /// <summary>Replaces this ingredient with its configured peeled form.</summary>
         public bool GettingPeeled(GameObject ingredientInstance)
         {
-            if (!canBePeeled || ingredientInstance == null || peeledResultPrefab == null)
+            if (!CanBePeeled || ingredientInstance == null || peeledResultPrefab == null)
                 return false;
 
             Instantiate(peeledResultPrefab, ingredientInstance.transform.position, ingredientInstance.transform.rotation);

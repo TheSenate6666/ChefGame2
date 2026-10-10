@@ -17,7 +17,10 @@ namespace ChefGame.Items
         Onion = 4,
         PeeledOnion = 5,
         Peeler = 6,
-        PeeledOnionHalf = 7
+        PeeledOnionHalf = 7,
+        Carrot = 8,
+        PeeledCarrot = 9,
+        CutCarrot = 10
     }
 
     public enum IngredientType
@@ -28,6 +31,9 @@ namespace ChefGame.Items
         Onion = 3,
         PeeledOnion = 4,
         PeeledOnionHalf = 5,
+        Carrot = 6,
+        PeeledCarrot = 7,
+        CutCarrot = 8,
        
     }
 

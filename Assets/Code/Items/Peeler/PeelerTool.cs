@@ -27,8 +27,11 @@ namespace ChefGame.Items
             if (definition == null || other == null)
                 return;
             IngredientInstance ingredient = other.GetComponentInParent<IngredientInstance>();
-            if (ingredient == null || !ingredient.CompareTag(itemTag) || !definition.CanPeel(ingredient.GetName()))
+            if (!definition.PeelsIngredients || ingredient == null || !ingredient.CompareTag(itemTag))
                 return;
+
+            // The ingredient owns the peelability check. This makes the trigger work
+            // for any ingredient whose definition enables CanBePeeled, including carrots.
             ingredient.TryGetPeeled();
         }
     }
