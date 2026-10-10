@@ -7,6 +7,8 @@ namespace ChefGame.Items
     public sealed class IngredientInstance : ItemInstance
     {
         [SerializeField, HideInInspector] private bool hasBeenCut;
+
+        [SerializeField] private IngredientType ingredientTypeOverride = IngredientType.None;
         private bool warnedMissingCutResults;
 
         public IngredientDefinition IngredientData => Definition as IngredientDefinition;
@@ -16,6 +18,15 @@ namespace ChefGame.Items
         public string GetName() => IngredientData != null ? IngredientData.GetName() : string.Empty;
 
         /// <returns>True only when cut results were spawned and this ingredient was scheduled for removal.</returns>
+        
+        public IngredientType GetIngredientType()
+        {
+            if (ingredientTypeOverride != IngredientType.None)
+                return ingredientTypeOverride;
+
+            return IngredientData != null ? IngredientData.GetIngredientType() : IngredientType.None;
+        }
+        
         public bool TryGetCut()
         {
             IngredientDefinition ingredientData = IngredientData;

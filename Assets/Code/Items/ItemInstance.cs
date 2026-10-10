@@ -10,5 +10,7 @@ namespace ChefGame.Items
 
         public ItemDefinition Definition => definition;
         public ItemType TypeId => definition != null ? definition.TypeId : ItemType.None;
+
+        
     }
 }
