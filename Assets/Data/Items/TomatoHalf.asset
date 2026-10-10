@@ -15,5 +15,8 @@ MonoBehaviour:
   customName: Tomato Half
   description: A cut tomato half. This ingredient cannot be cut again.
   canBeCut: 0
+  canBePeeled: 0
+  peeledResultPrefab: {fileID: 0}
   cutEffectPrefab: {fileID: 0}
   cutResultPrefabs: []
+  ingredientType: 2

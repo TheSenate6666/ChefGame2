@@ -9,6 +9,10 @@ namespace ChefGame.Items
         [Header("Ingredient")]
         [SerializeField] private bool canBeCut = true;
 
+        [Header("Peeling")]
+        [SerializeField] private bool canBePeeled;
+        [SerializeField] private GameObject peeledResultPrefab;
+
         [Header("Cut results")]
         [SerializeField] private GameObject cutEffectPrefab;
         [SerializeField] private List<GameObject> cutResultPrefabs = new List<GameObject>();
@@ -19,6 +23,8 @@ namespace ChefGame.Items
 
         public IngredientType GetIngredientType() => ingredientType;
         public virtual bool CanBeCut => canBeCut;
+        public virtual bool CanBePeeled => canBePeeled;
+        public GameObject PeeledResultPrefab => peeledResultPrefab;
         public GameObject CutEffectPrefab => cutEffectPrefab;
         public IReadOnlyList<GameObject> CutResultPrefabs => cutResultPrefabs;
 
@@ -84,6 +90,17 @@ namespace ChefGame.Items
                 }
             }
 
+            Destroy(ingredientInstance);
+            return true;
+        }
+
+        /// <summary>Replaces this ingredient with its configured peeled form.</summary>
+        public bool GettingPeeled(GameObject ingredientInstance)
+        {
+            if (!canBePeeled || ingredientInstance == null || peeledResultPrefab == null)
+                return false;
+
+            Instantiate(peeledResultPrefab, ingredientInstance.transform.position, ingredientInstance.transform.rotation);
             Destroy(ingredientInstance);
             return true;
         }

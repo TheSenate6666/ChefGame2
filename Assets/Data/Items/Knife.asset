@@ -18,3 +18,5 @@ MonoBehaviour:
   cutsIngredients: 1
   cuttableIngredientNames:
   - Tomato
+  - Peeled Onion
+
