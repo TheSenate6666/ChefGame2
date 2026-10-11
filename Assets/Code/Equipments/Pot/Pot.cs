@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
-using ChefGame.Items; //
-using ChefGame.Recipes; //
+using ChefGame.Items; 
+using ChefGame.Recipes;
+using Unity.Collections; 
 
 namespace ChefGame.Equipments
 {
@@ -13,8 +14,8 @@ namespace ChefGame.Equipments
 
         #region Required and Current Ingredients
         
-        [SerializeField] private List<RecipeLine> requiredIngredients = new List<RecipeLine>();
-        [SerializeField] private List<RecipeLine> currentIngredients = new List<RecipeLine>();
+        [SerializeField, ReadOnly] private List<RecipeLine> requiredIngredients = new List<RecipeLine>();
+        [SerializeField, ReadOnly] private List<RecipeLine> currentIngredients = new List<RecipeLine>();
         #endregion
         
         private bool isLidCoverClosed;
