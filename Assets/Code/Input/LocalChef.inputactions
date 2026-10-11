@@ -280,6 +280,17 @@
                 },
                 {
                     "name": "",
+                    "id": "f9e6eeb4-1722-4d7e-bf3b-7b7537903893",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "d7ab94c3-fe45-4313-b454-54fa0b774af4",
                     "path": "<Keyboard>/k",
                     "interactions": "",

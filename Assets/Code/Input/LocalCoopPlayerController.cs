@@ -125,7 +125,7 @@ namespace ChefGame.Input
             
             if (pressAction != null)
             {
-                pressAction.performed += OnPressPerformed;
+                pressAction.performed += OnPressAction;
             }
         }
 
@@ -135,6 +135,9 @@ namespace ChefGame.Input
 
             if (gameplayMap != null)
                 gameplayMap.Disable();
+
+            if (pressAction != null)
+                pressAction.performed -= OnPressAction;
 
             if (GamepadControllers.Remove(this))
                 ReassignGamepads();
@@ -383,7 +386,8 @@ private void OnDestroy()
 
     private void OnPressAction(InputAction.CallbackContext context)
     {
-        if (context.started) {OnPressPerformed.Invoke();}
+        if (context.performed)
+            OnPressPerformed?.Invoke();
     }
 }
     
