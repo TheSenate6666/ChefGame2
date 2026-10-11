@@ -10,7 +10,7 @@ namespace ChefGame.UI
         [Header("UI References")]
         [SerializeField] private Image dishIcon;
         [SerializeField] private TextMeshProUGUI dishNameText;
-        [SerializeField] private Image timerFillBar;
+        [SerializeField] private Image timerFillImage; 
 
         private float remainingTime;
         private float totalTime;
@@ -30,6 +30,10 @@ namespace ChefGame.UI
 
             totalTime = recipe.orderDuration;
             remainingTime = recipe.orderDuration;
+
+            if (timerFillImage != null)
+                timerFillImage.fillAmount = 1f;
+
             isCounting = true;
         }
 
@@ -39,9 +43,9 @@ namespace ChefGame.UI
 
             remainingTime -= Time.deltaTime;
 
-            if (timerFillBar != null && totalTime > 0f)
+            if (timerFillImage != null && totalTime > 0f)
             {
-                timerFillBar.fillAmount = remainingTime / totalTime;
+                timerFillImage.fillAmount = Mathf.Clamp01(remainingTime / totalTime);
             }
 
             if (remainingTime <= 0f)

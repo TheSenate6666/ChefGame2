@@ -12,9 +12,8 @@
   <component name="ChangeListManager">
     <list default="true" id="59c63dc8-2e76-48ad-b582-763ab1f17d11" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ChefGame2/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ChefGame2/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Code/Equipments/Pot/Pot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/Equipments/Pot/Pot.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Code/Equipments/Pot/Stove.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/Equipments/Pot/Stove.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Code/Recipe/Recipe.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/Recipe/Recipe.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Code/UI/OrderCardUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/UI/OrderCardUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Berkay/Berkay_Pot.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Berkay/Berkay_Pot.unity" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
