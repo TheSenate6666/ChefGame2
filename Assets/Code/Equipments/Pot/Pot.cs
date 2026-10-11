@@ -3,6 +3,7 @@ using UnityEngine;
 using ChefGame.Items;
 using ChefGame.Managers;
 using ChefGame.Recipes;
+using MoreMountains.Feedbacks;
 
 namespace ChefGame.Equipments
 {
@@ -40,6 +41,22 @@ namespace ChefGame.Equipments
         public Recipe MatchedRecipe => matchedRecipe;
         public float CookingQuality => cookingQuality;
         public bool IsCooking => isCooking;
+
+        [Header("Feedbacks (found in scene at runtime)")]
+        [SerializeField] private string potDropFeedbackName = "PotDropFeedback";
+        [SerializeField] private string startCookingFeedbackName = "StartCookingFeedback";
+        [SerializeField] private string endCookingFeedbackName = "EndCookingFeedback";
+
+        [Header("VFX")]
+        [SerializeField] private GameObject dropVfxPrefab;
+        [SerializeField] private GameObject startCookingVfxPrefab;
+        [SerializeField] private Transform startCookingVfxPoint; // optional, falls back to pot position
+        [SerializeField] private float vfxLifetime = 3f;
+
+        private MMF_Player potDropFeedback;
+        private MMF_Player startCookingFeedback;
+        private MMF_Player endCookingFeedback;
+
 
         private void OnEnable()
         {
@@ -96,6 +113,10 @@ namespace ChefGame.Equipments
             }
 
             Debug.Log($"Added {ingredient.GetName()} to pot. Current count for {type}: {currentLine?.amount ?? quantity}");
+
+            PlayFeedback(ref potDropFeedback, potDropFeedbackName);
+            SpawnVfx(dropVfxPrefab, ingredient.transform.position);
+
             Destroy(ingredient.gameObject);
         }
 
@@ -119,6 +140,7 @@ namespace ChefGame.Equipments
                 {
                     currentState = CookingState.Ready;
                     Debug.Log("The meal is cooked and ready to serve!");
+                    PlayFeedback(ref endCookingFeedback, endCookingFeedbackName);
                 }
             }
         }
@@ -179,6 +201,12 @@ namespace ChefGame.Equipments
                 isCooking = true;
                 cookingTimer = 0f;
                 currentState = CookingState.Underdone;
+
+
+                PlayFeedback(ref startCookingFeedback, startCookingFeedbackName);
+                Vector3 vfxPos = startCookingVfxPoint != null ? startCookingVfxPoint.position : transform.position;
+                SpawnVfx(startCookingVfxPrefab, vfxPos);
+
                 Debug.Log($"Started cooking active order: {matchedRecipe.recipeName} | Quality: {(cookingQuality * 100):0}%");
             }
             else
@@ -212,6 +240,25 @@ namespace ChefGame.Equipments
                     break;
             }
         }
+
+
+        private void PlayFeedback(ref MMF_Player cache, string objectName)
+        {
+            if (cache == null)
+            {
+                GameObject go = GameObject.Find(objectName);
+                if (go != null) cache = go.GetComponent<MMF_Player>();
+            }
+            if (cache != null) cache.PlayFeedbacks();
+        }
+
+        private void SpawnVfx(GameObject prefab, Vector3 position)
+        {
+            if (prefab == null) return;
+            GameObject vfx = Instantiate(prefab, position, Quaternion.identity);
+            Destroy(vfx, vfxLifetime);
+        }
+
 
         public void ClearPot()
         {
