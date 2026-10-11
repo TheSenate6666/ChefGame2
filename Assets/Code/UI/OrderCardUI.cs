@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -10,13 +11,14 @@ namespace ChefGame.UI
         [Header("UI References")]
         [SerializeField] private Image dishIcon;
         [SerializeField] private TextMeshProUGUI dishNameText;
-        [SerializeField] private Image timerFillImage; 
+        [SerializeField] private Image timerFillImage;
 
         private float remainingTime;
         private float totalTime;
         private bool isCounting;
 
         public Recipe BoundRecipe { get; private set; }
+        public event Action<OrderCardUI> OnOrderExpired;
 
         public void Setup(Recipe recipe)
         {
@@ -51,6 +53,7 @@ namespace ChefGame.UI
             if (remainingTime <= 0f)
             {
                 isCounting = false;
+                OnOrderExpired?.Invoke(this);
                 Destroy(gameObject);
             }
         }

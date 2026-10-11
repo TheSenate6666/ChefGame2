@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 2017004514089181190}
   - component: {fileID: 8624760186286422762}
   - component: {fileID: 9022803103140795694}
-  - component: {fileID: 7880963196390766318}
   m_Layer: 0
   m_Name: Pot
   m_TagString: Pot
@@ -106,7 +105,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf26a15e5e8491b4d81a97771047845a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  activeRecipe: {fileID: 11400000, guid: 5501ec0ddc89d5d48894060817aa4dd4, type: 2}
+  availableRecipes:
+  - {fileID: 11400000, guid: e2190ab50ca625544b76aefb537c3dea, type: 2}
+  - {fileID: 11400000, guid: 923ba962d9d3e9b4492740072c5627ab, type: 2}
+  cookingTimeWindowStart: 5
+  burnTimeThreshold: 10
+  matchedRecipe: {fileID: 0}
+  cookingQuality: 1
+  currentState: 0
 --- !u!65 &9022803103140795694
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -128,33 +134,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.99999994, y: 0.99999994, z: 1.0000001}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &7880963196390766318
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 475523512621562591}
-  serializedVersion: 5
-  m_Mass: 9200000
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!1 &7368371635331090869
 GameObject:
   m_ObjectHideFlags: 0
@@ -206,5 +185,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.0672014, y: 0.40635282, z: 1.9739882}
-  m_Center: {x: -0.0038881307, y: 1.5560182, z: 0.030378755}
+  m_Size: {x: 2.4171546, y: 0.4063529, z: 2.258431}
+  m_Center: {x: -0.09479937, y: 1.5560182, z: 0.08514863}

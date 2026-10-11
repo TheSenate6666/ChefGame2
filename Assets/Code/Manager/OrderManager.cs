@@ -3,57 +3,121 @@ using UnityEngine;
 using ChefGame.Recipes;
 using ChefGame.UI;
 
-namespace ChefGame.Manager
+namespace ChefGame.Managers
 {
     public class OrderManager : MonoBehaviour
     {
+        public static OrderManager Instance { get; private set; }
+
+        [Header("Config")]
         [SerializeField] private int maxConcurrentOrders = 4;
+        [SerializeField] private float orderSpawnInterval = 7f;
+        [SerializeField] private List<Recipe> availableRecipes = new List<Recipe>();
+
+        [Header("UI References")]
         [SerializeField] private Transform orderContainer;
         [SerializeField] private GameObject orderCardPrefab;
-        [SerializeField] private List<Recipe> availableRecipes;
 
-        // Tracks the currently active 3-4 UI order cards
-        private readonly List<OrderCardUI> activeOrders = new();
+        private readonly List<OrderCardUI> activeOrders = new List<OrderCardUI>();
+        private float spawnTimer;
+        public int ViewerCount { get; private set; } = 100;
 
-        public bool CanSpawnOrder => activeOrders.Count < maxConcurrentOrders;
-
-        public void TrySpawnOrder()
+        private void Awake()
         {
-            if (!CanSpawnOrder || availableRecipes.Count == 0)
-                return;
+            if (Instance == null) Instance = this;
+            else Destroy(gameObject);
+        }
 
-            Recipe recipe = availableRecipes[Random.Range(0, availableRecipes.Count)];
+        private void Start()
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                SpawnOrder();
+            }
+        }
+
+        private void Update()
+        {
+            spawnTimer += Time.deltaTime;
+            if (spawnTimer >= orderSpawnInterval)
+            {
+                spawnTimer = 0f;
+                if (activeOrders.Count < maxConcurrentOrders)
+                {
+                    SpawnOrder();
+                }
+            }
+        }
+
+        private void SpawnOrder()
+        {
+            if (availableRecipes.Count == 0 || orderCardPrefab == null) return;
+
+            Recipe randomRecipe = availableRecipes[Random.Range(0, availableRecipes.Count)];
             GameObject cardObj = Instantiate(orderCardPrefab, orderContainer);
 
             if (cardObj.TryGetComponent(out OrderCardUI cardUI))
             {
-                cardUI.Setup(recipe);
+                cardUI.Setup(randomRecipe);
+                cardUI.OnOrderExpired += HandleOrderExpired;
                 activeOrders.Add(cardUI);
             }
         }
 
-        public bool TryDeliverRecipe(Recipe deliveredRecipe)
+        private void HandleOrderExpired(OrderCardUI expiredCard)
+        {
+            activeOrders.Remove(expiredCard);
+            ModifyViewers(-20);
+            Debug.Log($"Order expired! Current viewers: {ViewerCount}");
+        }
+
+        public List<Recipe> GetActiveOrderRecipes()
+        {
+            var recipes = new List<Recipe>();
+            for (int i = 0; i < activeOrders.Count; i++)
+            {
+                if (activeOrders[i] != null && activeOrders[i].BoundRecipe != null)
+                {
+                    if (!recipes.Contains(activeOrders[i].BoundRecipe))
+                    {
+                        recipes.Add(activeOrders[i].BoundRecipe);
+                    }
+                }
+            }
+            return recipes;
+        }
+
+        public bool TryDeliverDish(Recipe cookedRecipe, float qualityMultiplier)
         {
             for (int i = 0; i < activeOrders.Count; i++)
             {
-                if (activeOrders[i].BoundRecipe == deliveredRecipe)
+                if (activeOrders[i].BoundRecipe == cookedRecipe)
                 {
-                    // Remove matching order regardless of its index
+                    int gainedViewers = Mathf.RoundToInt(50 * qualityMultiplier);
+                    ModifyViewers(gainedViewers);
+
+                    Debug.Log($"Order completed! Gained: +{gainedViewers} viewers. Current total: {ViewerCount}");
+
                     Destroy(activeOrders[i].gameObject);
                     activeOrders.RemoveAt(i);
                     return true;
                 }
             }
 
-            return false; // No matching active order found
+            ModifyViewers(-10);
+            Debug.LogWarning("Cooked dish does not match any active order! Lost 10 viewers.");
+            return false;
         }
 
-        public void HandleOrderExpired(OrderCardUI expiredCard)
+        public void HandleBurntMeal()
         {
-            if (activeOrders.Remove(expiredCard))
-            {
-                Destroy(expiredCard.gameObject);
-            }
+            ModifyViewers(-30);
+            Debug.LogError("Meal burned! Lost 30 viewers.");
+        }
+
+        private void ModifyViewers(int amount)
+        {
+            ViewerCount = Mathf.Max(0, ViewerCount + amount);
         }
     }
 }

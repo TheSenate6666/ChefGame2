@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da31793f916993c438d4b7e5ee6d3b45, type: 3}
   m_Name: test1
   m_EditorClassIdentifier: Assembly-CSharp::ChefGame.Recipes.Recipe
-  difficulty: 1
   recipeName: stew stewson
+  recipeIcon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  difficulty: 1
+  orderDuration: 50
   recipeLines:
   - ingredientType: 2
     amount: 1
   - ingredientType: 4
     amount: 1
-  isActive: 0
-  nextRecipe: {fileID: 11400000, guid: 923ba962d9d3e9b4492740072c5627ab, type: 2}
+  isCurrentRecipe: 0

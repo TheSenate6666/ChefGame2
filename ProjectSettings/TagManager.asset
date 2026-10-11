@@ -8,6 +8,7 @@ TagManager:
   - Item
   - Knife
   - Pot
+  - Manager
   layers:
   - Default
   - TransparentFX

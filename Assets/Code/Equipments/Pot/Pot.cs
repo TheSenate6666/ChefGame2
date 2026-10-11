@@ -1,22 +1,36 @@
 using System.Collections.Generic;
 using UnityEngine;
 using ChefGame.Items;
+using ChefGame.Managers;
 using ChefGame.Recipes;
 
 namespace ChefGame.Equipments
 {
+    public enum CookingState
+    {
+        Idle,
+        Underdone,
+        Ready,
+        Burnt
+    }
+
     public class Pot : MonoBehaviour
     {
-        [Header("Recipe Database")]
-        [SerializeField] private List<Recipe> availableRecipes = new List<Recipe>();
+        [Header("Cooking Timing Config")]
+        [SerializeField] private float cookingTimeWindowStart = 5f;
+        [SerializeField] private float burnTimeThreshold = 10f;
 
         [Header("Runtime State")]
         [SerializeField] private Recipe matchedRecipe;
         [SerializeField] private float cookingQuality = 1f;
-        [SerializeField] private bool isCooking;
+        [SerializeField] private CookingState currentState = CookingState.Idle;
 
         private readonly List<RecipeLine> currentIngredients = new List<RecipeLine>();
+        private readonly HashSet<IngredientInstance> processedIngredients = new HashSet<IngredientInstance>();
+        
+        private float cookingTimer;
         private bool isLidCoverClosed;
+        private bool isCooking;
 
         public Recipe MatchedRecipe => matchedRecipe;
         public float CookingQuality => cookingQuality;
@@ -32,39 +46,40 @@ namespace ChefGame.Equipments
             Stove.OnStoveToggled -= ToggleLidCover;
         }
 
-        public void OnTriggerEnter(Collider other)
-        {
-            TryAddIngredient(other);
-        }
-
-        private void OnTriggerStay(Collider other)
-        {
-            TryAddIngredient(other);
-        }
-
-        private void TryAddIngredient(Collider other)
+        // Called directly from PotTriggerZone on the child trigger object
+        public void HandleIngredientTrigger(Collider other)
         {
             if (isLidCoverClosed || isCooking) return;
 
-            IngredientInstance ingredient = other.GetComponent<IngredientInstance>();
-            if (ingredient != null && !ingredient.isBeingHeld)
+            IngredientInstance ingredient = other.GetComponentInParent<IngredientInstance>();
+            
+            // Validate: ignore if missing, held by player, or already processed
+            if (ingredient == null || ingredient.isBeingHeld || processedIngredients.Contains(ingredient))
+                return;
+
+            // Immediately mark as processed to prevent duplicate processing in the same frame
+            processedIngredients.Add(ingredient);
+
+            // Disable all child colliders instantly so further physics events are ignored
+            Collider[] colliders = ingredient.GetComponentsInChildren<Collider>();
+            foreach (Collider col in colliders)
             {
-                ProcessItem(ingredient);
+                col.enabled = false;
             }
+
+            ProcessItem(ingredient);
         }
 
         private void ProcessItem(IngredientInstance ingredient)
         {
             IngredientType type = ingredient.GetIngredientType();
-
             if (type == IngredientType.None)
             {
-                Debug.LogError($"Ingredient type none: {ingredient.gameObject.name}", this);
+                Debug.LogError($"Invalid ingredient type: {ingredient.gameObject.name}", this);
                 return;
             }
 
             float quantity = 1f;
-
             RecipeLine currentLine = currentIngredients.Find(item => item.ingredientType == type);
             if (currentLine != null)
             {
@@ -75,8 +90,32 @@ namespace ChefGame.Equipments
                 currentIngredients.Add(new RecipeLine { ingredientType = type, amount = quantity });
             }
 
-            Debug.Log($"{ingredient.GetName()} added to the pot. Total {type}: {currentLine?.amount ?? quantity}");
+            Debug.Log($"Added {ingredient.GetName()} to pot. Current count for {type}: {currentLine?.amount ?? quantity}");
             Destroy(ingredient.gameObject);
+        }
+
+        private void Update()
+        {
+            if (!isCooking) return;
+
+            cookingTimer += Time.deltaTime;
+
+            if (cookingTimer >= burnTimeThreshold)
+            {
+                if (currentState != CookingState.Burnt)
+                {
+                    currentState = CookingState.Burnt;
+                    Debug.LogError("The meal has burned!");
+                }
+            }
+            else if (cookingTimer >= cookingTimeWindowStart)
+            {
+                if (currentState != CookingState.Ready)
+                {
+                    currentState = CookingState.Ready;
+                    Debug.Log("The meal is cooked and ready to serve!");
+                }
+            }
         }
 
         private void ToggleLidCover(bool isLidCovered)
@@ -85,23 +124,32 @@ namespace ChefGame.Equipments
 
             if (isLidCovered)
             {
-                EvaluateRecipe();
+                StartCookingProcess();
             }
             else
             {
-                StopCooking();
+                FinishOrStopCookingProcess();
             }
         }
 
-        private void EvaluateRecipe()
+        private void StartCookingProcess()
         {
             if (currentIngredients.Count == 0)
             {
-                Debug.Log("Stove turned on, but the pot is empty.");
+                Debug.Log("Stove activated, but the pot is empty.");
                 return;
             }
 
-            // Convert List<RecipeLine> to Dictionary<IngredientType, float>
+            List<Recipe> activeOrderRecipes = OrderManager.Instance != null 
+                ? OrderManager.Instance.GetActiveOrderRecipes() 
+                : new List<Recipe>();
+
+            if (activeOrderRecipes.Count == 0)
+            {
+                Debug.LogWarning("Cannot start cooking: No active orders available.");
+                return;
+            }
+
             var ingredientMap = new Dictionary<IngredientType, float>();
             foreach (RecipeLine line in currentIngredients)
             {
@@ -111,37 +159,57 @@ namespace ChefGame.Equipments
                     ingredientMap[line.ingredientType] = line.amount;
             }
 
-            RecipeMatchResult result = RecipeMatcher.EvaluateIngredients(availableRecipes, ingredientMap);
+            RecipeMatchResult result = RecipeMatcher.EvaluateIngredients(activeOrderRecipes, ingredientMap);
 
             if (result.IsValid)
             {
                 matchedRecipe = result.MatchedRecipe;
                 cookingQuality = result.QualityMultiplier;
                 isCooking = true;
-
-                Debug.Log($"Cooking started: {matchedRecipe.recipeName} | Quality: %{(cookingQuality * 100):0}");
+                cookingTimer = 0f;
+                currentState = CookingState.Underdone;
+                Debug.Log($"Started cooking active order: {matchedRecipe.recipeName} | Quality: {(cookingQuality * 100):0}%");
             }
             else
             {
                 matchedRecipe = null;
-                cookingQuality = 0f;
                 isCooking = false;
-
-                Debug.LogWarning("Required ingredients are missing. Stove turned on with an invalid mix.");
+                Debug.LogWarning("Pot contents do not match any active order.");
             }
         }
 
-        private void StopCooking()
+        private void FinishOrStopCookingProcess()
         {
+            if (!isCooking) return;
+
             isCooking = false;
-            Debug.Log("Cooking paused / stopped.");
+
+            switch (currentState)
+            {
+                case CookingState.Ready:
+                    OrderManager.Instance.TryDeliverDish(matchedRecipe, cookingQuality);
+                    ClearPot();
+                    break;
+
+                case CookingState.Burnt:
+                    OrderManager.Instance.HandleBurntMeal();
+                    ClearPot();
+                    break;
+
+                case CookingState.Underdone:
+                    Debug.LogWarning("Stove turned off too early: Food is still raw.");
+                    break;
+            }
         }
 
         public void ClearPot()
         {
             currentIngredients.Clear();
+            processedIngredients.Clear();
             matchedRecipe = null;
             cookingQuality = 1f;
+            cookingTimer = 0f;
+            currentState = CookingState.Idle;
             isCooking = false;
         }
     }
