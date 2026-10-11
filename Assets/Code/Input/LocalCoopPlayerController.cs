@@ -123,10 +123,6 @@ namespace ChefGame.Input
                 gameplayMap.Enable();
             }
             
-            if (pressAction != null)
-            {
-                pressAction.performed += OnPressPerformed;
-            }
         }
 
         private void OnDisable()
