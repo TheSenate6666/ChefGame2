@@ -27,15 +27,17 @@ namespace ChefGame.Items
     {
         None = 0,
         Tomato = 1,
-        TomatoHalf = 2,
-        Onion = 3,
-        PeeledOnion = 4,
-        PeeledOnionHalf = 5,
-        Carrot = 6,
-        PeeledCarrot = 7,
-        CutCarrot = 8,
-       
+        HalfTomato = 2,
+        QuarterTomato = 3,
+        PeeledTomato = 4,
+        Onion = 5,
+        HalfOnion = 6,
+        QuarterOnion = 7,
+        PeeledOnion = 8,
+        Carrot = 9,
+        HalfCarrot = 10,
+        QuarterCarrot = 11,
+        PeeledCarrot = 12,
     }
-
-    //testcomment
+    
 }
