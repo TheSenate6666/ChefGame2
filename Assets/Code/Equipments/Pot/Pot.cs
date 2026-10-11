@@ -47,6 +47,9 @@ namespace ChefGame.Equipments
         [SerializeField] private string startCookingFeedbackName = "StartCookingFeedback";
         [SerializeField] private string endCookingFeedbackName = "EndCookingFeedback";
 
+        [SerializeField] private string isCookingFeedbackName = "IsCookingFeedback";
+        [SerializeField] private int isCookingSoundID = 42;
+
         [Header("VFX")]
         [SerializeField] private GameObject dropVfxPrefab;
         [SerializeField] private GameObject startCookingVfxPrefab;
@@ -57,6 +60,8 @@ namespace ChefGame.Equipments
         private MMF_Player startCookingFeedback;
         private MMF_Player endCookingFeedback;
 
+        private MMF_Player isCookingFeedback;
+
 
         private void OnEnable()
         {
@@ -64,8 +69,11 @@ namespace ChefGame.Equipments
         }
 
         private void OnDisable()
+
         {
+            
             Stove.OnStoveToggled -= ToggleLidCover;
+            StopIsCookingLoop();
         }
 
         // Called directly from PotTriggerZone on the child trigger object
@@ -151,10 +159,12 @@ namespace ChefGame.Equipments
 
             if (isLidCovered)
             {
+                PlayFeedback(ref isCookingFeedback, isCookingFeedbackName);
                 StartCookingProcess();
             }
             else
             {
+                StopIsCookingLoop();
                 FinishOrStopCookingProcess();
             }
         }
@@ -257,6 +267,14 @@ namespace ChefGame.Equipments
             if (prefab == null) return;
             GameObject vfx = Instantiate(prefab, position, Quaternion.identity);
             Destroy(vfx, vfxLifetime);
+        }
+
+        private void StopIsCookingLoop()
+        {
+            if (isCookingFeedback != null) isCookingFeedback.StopFeedbacks();
+
+            // Makes sure the looping sound is really stopped and freed
+            
         }
 
 
