@@ -1,4 +1,5 @@
 using UnityEngine;
+using MoreMountains.Feedbacks;
 
 namespace ChefGame.Items
 {
@@ -12,6 +13,13 @@ namespace ChefGame.Items
         private Collider cuttingZone;
         private KnifeDefinition definition;
         private Transform vfxLocation;
+
+        private MMF_Player cutFeedback;
+
+        private void Start()
+        {
+            cutFeedback = GameObject.Find("CutFeedback")?.GetComponent<MMF_Player>();
+        }
 
         private void Awake()
         {
@@ -67,6 +75,11 @@ namespace ChefGame.Items
             // Particle-only slash effects should clean themselves up after their longest particle lifetime.
             // Use a short fallback for non-particle prefabs so spawned effects do not accumulate.
             Destroy(effect, lifetime > 0f ? lifetime : 5f);
+
+            if (cutFeedback != null)
+            {
+                cutFeedback.PlayFeedbacks();
+            }
         }
     }
 }

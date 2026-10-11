@@ -20,7 +20,7 @@ MonoBehaviour:
   cutEffectPrefab: {fileID: 5184478001212435664, guid: bfd10d8517f53c7458dedeb9ae876649, type: 3}
   cutResultPrefabs:
   - {fileID: 1614628581427960876, guid: 9a0f0f4b957a4e64bca131aad1a6f113, type: 3}
-  - {fileID: 1614628581427960876, guid: 9a0f0f4b957a4e64bca131aad1a6f113, type: 3}
-  - {fileID: 1614628581427960876, guid: 9a0f0f4b957a4e64bca131aad1a6f113, type: 3}
-  - {fileID: 1614628581427960876, guid: 9a0f0f4b957a4e64bca131aad1a6f113, type: 3}
+  - {fileID: 1614628581427960876, guid: a976da55f5a40094a9115cd7b88d8ef0, type: 3}
+  - {fileID: 1614628581427960876, guid: 13f8de63978d04d44af3d2fcace7ad0c, type: 3}
+  - {fileID: 1614628581427960876, guid: 6014a1196e440a345b8f0ce88211f253, type: 3}
   ingredientType: 7
