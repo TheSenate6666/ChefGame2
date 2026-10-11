@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Peeler
   m_EditorClassIdentifier: Assembly-CSharp::ChefGame.Items.PeelerDefinition
   customName: Peeler
-  description: A kitchen peeler that peels onions and carrots inside its trigger zone.
+  description: A kitchen peeler that peels onions and carrots inside its trigger
+    zone.
   peelsIngredients: 1
-
-
+  peelerEffect: {fileID: 993318183009383047, guid: 21e21ca35c60af84bb3cc862ecc3fc10, type: 3}

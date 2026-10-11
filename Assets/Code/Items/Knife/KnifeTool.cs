@@ -11,6 +11,7 @@ namespace ChefGame.Items
 
         private Collider cuttingZone;
         private KnifeDefinition definition;
+        private Transform vfxLocation;
 
         private void Awake()
         {
@@ -22,6 +23,11 @@ namespace ChefGame.Items
             definition = itemInstance != null ? itemInstance.Definition as KnifeDefinition : null;
             if (definition == null)
                 Debug.LogError($"{nameof(KnifeTool)} on '{name}' needs a parent {nameof(ItemInstance)} assigned a {nameof(KnifeDefinition)} asset.", this);
+
+            Transform knifeRoot = itemInstance != null ? itemInstance.transform : transform.root;
+            vfxLocation = knifeRoot.Find("VfxLocation");
+            if (vfxLocation == null)
+                vfxLocation = knifeRoot;
         }
 
         private void OnTriggerEnter(Collider other) => TryCutIngredient(other);
@@ -39,7 +45,28 @@ namespace ChefGame.Items
             if (!definition.CanCut(ingredient.GetName()))
                 return;
 
-            ingredient.TryGetCut();
+            if (ingredient.TryGetCut())
+                SpawnKnifeEffect();
+        }
+
+        private void SpawnKnifeEffect()
+        {
+            if (definition.KnifeEffect == null || vfxLocation == null)
+                return;
+
+            GameObject effect = Instantiate(definition.KnifeEffect, vfxLocation.position, vfxLocation.rotation);
+            ParticleSystem[] particleSystems = effect.GetComponentsInChildren<ParticleSystem>();
+            float lifetime = 0f;
+
+            foreach (ParticleSystem particleSystem in particleSystems)
+            {
+                ParticleSystem.MainModule main = particleSystem.main;
+                lifetime = Mathf.Max(lifetime, main.duration + main.startDelay.constantMax + main.startLifetime.constantMax);
+            }
+
+            // Particle-only slash effects should clean themselves up after their longest particle lifetime.
+            // Use a short fallback for non-particle prefabs so spawned effects do not accumulate.
+            Destroy(effect, lifetime > 0f ? lifetime : 5f);
         }
     }
 }

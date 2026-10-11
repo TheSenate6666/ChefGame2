@@ -20,5 +20,6 @@ MonoBehaviour:
   - Tomato
   - Peeled Onion
   - Peeled Carrot
+  knifeEffect: {fileID: 993318183009383047, guid: 21e21ca35c60af84bb3cc862ecc3fc10, type: 3}
 
 

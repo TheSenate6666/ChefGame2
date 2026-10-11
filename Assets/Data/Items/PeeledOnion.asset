@@ -17,10 +17,8 @@ MonoBehaviour:
   canBeCut: 1
   canBePeeled: 0
   peeledResultPrefab: {fileID: 0}
-  cutEffectPrefab: {fileID: 0}
+  cutEffectPrefab: {fileID: 885512556878397, guid: 4c969d229a2996b438acbdedee04b274, type: 3}
   cutResultPrefabs:
   - {fileID: 1614628581427960876, guid: 9a0f0f4b957a4e64bca131aad1a6f10c, type: 3}
   - {fileID: 1614628581427960876, guid: 9a0f0f4b957a4e64bca131aad1a6f10c, type: 3}
   ingredientType: 4
-
-
