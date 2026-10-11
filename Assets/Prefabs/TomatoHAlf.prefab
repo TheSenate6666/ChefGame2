@@ -98,6 +98,7 @@ MonoBehaviour:
   definition: {fileID: 11400000, guid: e4d5e00edd4a85f42a3b4eaaf442f3f4, type: 2}
   hasBeenCut: 0
   hasBeenPeeled: 0
+  isBeingHeld: 0
   ingredientTypeOverride: 0
 --- !u!1 &7426973745400665023
 GameObject:
@@ -140,7 +141,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7426973745400665023}
-  m_Mesh: {fileID: -6530598999386414952, guid: 5b6634a513cb5b646aa0d26565c76778, type: 3}
+  m_Mesh: {fileID: -6530598999386414952, guid: 174c91ffb7a59ef48adedde30c1e773d, type: 3}
 --- !u!23 &2392828894701418789
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -166,7 +167,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 224decabb8f749a4888116312c01e3b6, type: 2}
+  - {fileID: 9185737683893222716, guid: 174c91ffb7a59ef48adedde30c1e773d, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
