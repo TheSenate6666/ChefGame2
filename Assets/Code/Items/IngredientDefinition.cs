@@ -12,6 +12,7 @@ namespace ChefGame.Items
         [Header("Peeling")]
         [SerializeField] private bool canBePeeled;
         [SerializeField] private GameObject peeledResultPrefab;
+        [SerializeField] private GameObject peelEffectPrefab;
 
         [Header("Cut results")]
         [SerializeField] private GameObject cutEffectPrefab;
@@ -25,6 +26,7 @@ namespace ChefGame.Items
         public virtual bool CanBeCut => canBeCut;
         public virtual bool CanBePeeled => canBePeeled;
         public GameObject PeeledResultPrefab => peeledResultPrefab;
+        public GameObject PeelEffectPrefab => peelEffectPrefab;
         public GameObject CutEffectPrefab => cutEffectPrefab;
         public IReadOnlyList<GameObject> CutResultPrefabs => cutResultPrefabs;
 
@@ -100,7 +102,13 @@ namespace ChefGame.Items
             if (!CanBePeeled || ingredientInstance == null || peeledResultPrefab == null)
                 return false;
 
-            Instantiate(peeledResultPrefab, ingredientInstance.transform.position, ingredientInstance.transform.rotation);
+            Vector3 position = ingredientInstance.transform.position;
+            Quaternion rotation = ingredientInstance.transform.rotation;
+
+            if (peelEffectPrefab != null)
+                Instantiate(peelEffectPrefab, position, rotation);
+
+            Instantiate(peeledResultPrefab, position, rotation);
             Destroy(ingredientInstance);
             return true;
         }

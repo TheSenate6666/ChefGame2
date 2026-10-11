@@ -28,7 +28,7 @@ namespace ChefGame.Items
             foreach (LocalCoopItemInteractor interactor in subscribedInteractors)
             {
                 Unsubscribe(interactor);
-                interactor.SetSpawnerInteraction(this, false);
+                interactor.SetInteractionOverride(this, false);
             }
             subscribedInteractors.Clear();
             occupants.Clear();
@@ -36,7 +36,12 @@ namespace ChefGame.Items
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other == null || occupants.ContainsKey(other))
+            // Held items are parented beneath the player too, so walking up
+            // the hierarchy alone can mistake an ingredient collider for a
+            // player collider and leave this spawner subscribed after the
+            // ingredient is cut/destroyed. Only the actual hand collider can
+            // establish player occupancy.
+            if (other == null || !other.CompareTag("Hand") || occupants.ContainsKey(other))
                 return;
 
             LocalCoopItemInteractor interactor = other.GetComponentInParent<LocalCoopItemInteractor>();
@@ -46,7 +51,7 @@ namespace ChefGame.Items
             occupants.Add(other, interactor);
             if (subscribedInteractors.Add(interactor))
             {
-                interactor.SetSpawnerInteraction(this, true);
+                interactor.SetInteractionOverride(this, true);
                 InputAction action = interactor.InteractAction;
                 if (action != null)
                     action.performed += HandleInteractPressed;
@@ -64,11 +69,7 @@ namespace ChefGame.Items
                     return;
             }
 
-            if (subscribedInteractors.Remove(interactor))
-            {
-                Unsubscribe(interactor);
-                interactor.SetSpawnerInteraction(this, false);
-            }
+            UnregisterInteractor(interactor);
         }
 
         private void HandleInteractPressed(InputAction.CallbackContext context)
@@ -76,7 +77,17 @@ namespace ChefGame.Items
             LocalCoopItemInteractor interactor = context.action != null
                 ? FindInteractorForAction(context.action)
                 : null;
-            if (interactor == null || interactor.IsHoldingItem)
+            if (interactor == null)
+                return;
+
+            if (!IsHandColliderStillInside(interactor))
+            {
+                RemoveInteractorOccupancy(interactor);
+                UnregisterInteractor(interactor);
+                return;
+            }
+
+            if (interactor.IsHoldingItem)
                 return;
 
             if (prefabToSpawn == null)
@@ -106,6 +117,46 @@ namespace ChefGame.Items
             }
 
             return null;
+        }
+
+        private bool IsHandColliderStillInside(LocalCoopItemInteractor interactor)
+        {
+            if (spawnArea == null || !spawnArea.enabled || !spawnArea.gameObject.activeInHierarchy)
+                return false;
+
+            Bounds spawnBounds = spawnArea.bounds;
+            foreach (KeyValuePair<Collider, LocalCoopItemInteractor> occupant in occupants)
+            {
+                Collider handCollider = occupant.Key;
+                if (occupant.Value == interactor && handCollider != null && handCollider.enabled &&
+                    handCollider.gameObject.activeInHierarchy && handCollider.CompareTag("Hand") &&
+                    spawnBounds.Intersects(handCollider.bounds))
+                    return true;
+            }
+
+            return false;
+        }
+
+        private void RemoveInteractorOccupancy(LocalCoopItemInteractor interactor)
+        {
+            List<Collider> collidersToRemove = new();
+            foreach (KeyValuePair<Collider, LocalCoopItemInteractor> occupant in occupants)
+            {
+                if (occupant.Value == interactor)
+                    collidersToRemove.Add(occupant.Key);
+            }
+
+            foreach (Collider handCollider in collidersToRemove)
+                occupants.Remove(handCollider);
+        }
+
+        private void UnregisterInteractor(LocalCoopItemInteractor interactor)
+        {
+            if (subscribedInteractors.Remove(interactor))
+            {
+                Unsubscribe(interactor);
+                interactor.SetInteractionOverride(this, false);
+            }
         }
 
         private void Unsubscribe(LocalCoopItemInteractor interactor)

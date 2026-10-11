@@ -16,6 +16,7 @@ MonoBehaviour:
   description: An unpeeled onion. Use a peeler before cutting.
   canBeCut: 0
   canBePeeled: 1
+  peelEffectPrefab: {fileID: 885512556878397, guid: 4c969d229a2996b438acbdedee04b274, type: 3}
   peeledResultPrefab: {fileID: 3211758553485303005, guid: 9a0f0f4b957a4e64bca131aad1a6f106, type: 3}
   cutEffectPrefab: {fileID: 885512556878397, guid: 4c969d229a2996b438acbdedee04b274, type: 3}
   cutResultPrefabs: []
