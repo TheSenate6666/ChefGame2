@@ -12,6 +12,9 @@ namespace ChefGame.Items
     [RequireComponent(typeof(ChefGame.Input.LocalCoopPlayerController))]
     public sealed class LocalCoopItemInteractor : MonoBehaviour
     {
+        private const float DroppedItemPickupCooldownSeconds = 1f;
+        private static readonly Dictionary<int, float> DroppedItemPickupCooldowns = new();
+
         [SerializeField] private Transform itemHolder;
         [SerializeField] private Transform interactionCenter;
         [SerializeField, Min(0f)] private float interactionRadius = 1f;
@@ -28,6 +31,12 @@ namespace ChefGame.Items
         private Collider[] heldColliders;
         private readonly HashSet<MonoBehaviour> activeInteractionOverrides = new();
         private bool missingInteractActionLogged;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetDroppedItemPickupCooldowns()
+        {
+            DroppedItemPickupCooldowns.Clear();
+        }
 
         public bool IsHoldingItem => isHoldingItem;
         public Transform HeldItem => heldItem;
@@ -153,7 +162,7 @@ namespace ChefGame.Items
                     continue;
 
                 Transform taggedItem = FindTaggedItemRoot(nearbyCollider.transform);
-                if (taggedItem == null)
+                if (taggedItem == null || IsPickupCoolingDown(taggedItem))
                     continue;
 
                 float distanceSquared = (taggedItem.position - center).sqrMagnitude;
@@ -182,7 +191,7 @@ namespace ChefGame.Items
         /// <summary>Attaches an item to this player's holder using the normal pickup rules.</summary>
         public bool TryHoldItem(Transform item)
         {
-            if (isHoldingItem || itemHolder == null || item == null)
+            if (isHoldingItem || itemHolder == null || item == null || IsPickupCoolingDown(item))
                 return false;
 
             heldItem = item;
@@ -228,6 +237,8 @@ namespace ChefGame.Items
         {
             if (heldItem != null)
             {
+                DroppedItemPickupCooldowns[heldItem.GetInstanceID()] = Time.time + DroppedItemPickupCooldownSeconds;
+
                 IngredientInstance ingredientInstance = heldItem.GetComponent<IngredientInstance>();
                 if (ingredientInstance != null) {ingredientInstance.isBeingHeld = false;} // Ingredient drop being held info
                 heldItem.SetParent(null, true);
@@ -261,6 +272,22 @@ namespace ChefGame.Items
             heldRigidbody = null;
             heldColliders = null;
             isHoldingItem = false;
+        }
+
+        private static bool IsPickupCoolingDown(Transform item)
+        {
+            if (item == null)
+                return false;
+
+            int itemId = item.GetInstanceID();
+            if (!DroppedItemPickupCooldowns.TryGetValue(itemId, out float cooldownEndTime))
+                return false;
+
+            if (Time.time < cooldownEndTime)
+                return true;
+
+            DroppedItemPickupCooldowns.Remove(itemId);
+            return false;
         }
 
         private void OnDrawGizmosSelected()
