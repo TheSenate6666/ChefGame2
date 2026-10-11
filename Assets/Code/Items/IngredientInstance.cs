@@ -8,11 +8,12 @@ namespace ChefGame.Items
     {
         [SerializeField, HideInInspector] private bool hasBeenCut;
         [SerializeField, HideInInspector] private bool hasBeenPeeled;
+        public bool isBeingHeld;
 
         [SerializeField] private IngredientType ingredientTypeOverride = IngredientType.None;
         private bool warnedMissingCutResults;
 
-        public IngredientDefinition IngredientData => Definition as IngredientDefinition;
+        private IngredientDefinition IngredientData => Definition as IngredientDefinition;
         public bool HasBeenCut => hasBeenCut;
 
         /// <summary>Returns this ingredient's definition name, or an empty string if no definition is assigned.</summary>

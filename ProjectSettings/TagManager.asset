@@ -7,6 +7,7 @@ TagManager:
   - Hand
   - Item
   - Knife
+  - Pot
   layers:
   - Default
   - TransparentFX
