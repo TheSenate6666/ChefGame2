@@ -21,8 +21,8 @@ namespace ChefGame.Managers
         [SerializeField] private TextMeshProUGUI viewerCountText;
 
         [Header("Viewer Fluctuation Settings")]
-        [SerializeField] private float countLerpSpeed = 5f;
-        [SerializeField] private float fluctuationInterval = 1.2f;
+        [SerializeField] private float countLerpSpeed = 2f;
+        [SerializeField] private float fluctuationInterval = 0.5f;
         [SerializeField] private int fluctuationRange = 3;
 
         [Header("AFK / Idle Viewer Drop")]

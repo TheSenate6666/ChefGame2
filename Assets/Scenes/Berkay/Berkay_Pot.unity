@@ -1680,6 +1680,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7455182860712398109, guid: 3d12856f7419ee043b37c66441aa70eb, type: 3}
+      propertyPath: fluctuationInterval
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7455182860712398109, guid: 3d12856f7419ee043b37c66441aa70eb, type: 3}
       propertyPath: recipePool.Array.size
       value: 3
       objectReference: {fileID: 0}
