@@ -99,7 +99,7 @@ MonoBehaviour:
   hasBeenCut: 0
   hasBeenPeeled: 0
   isBeingHeld: 0
-  ingredientTypeOverride: 8
+  ingredientTypeOverride: 11
 --- !u!1 &7426973745400665023
 GameObject:
   m_ObjectHideFlags: 0

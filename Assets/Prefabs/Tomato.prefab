@@ -98,7 +98,8 @@ MonoBehaviour:
   definition: {fileID: 11400000, guid: f8686252e704165498ad8e4ed22f3306, type: 2}
   hasBeenCut: 0
   hasBeenPeeled: 0
-  ingredientTypeOverride: 0
+  isBeingHeld: 0
+  ingredientTypeOverride: 1
 --- !u!1 &7404621635384911130
 GameObject:
   m_ObjectHideFlags: 0
