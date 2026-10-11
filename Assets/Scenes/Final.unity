@@ -4059,6 +4059,7 @@ MonoBehaviour:
   excessPenaltyRate: 0.25
   unrelatedIngredientPenalty: 0.35
   minimumQualityFloor: 0.1
+  currentIngredients: []
 --- !u!33 &981665554265767105
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -7480,7 +7481,7 @@ MonoBehaviour:
   movementZAcceleration: 6
   maximumSpeed: 5
   drag: 15
-  depthMovementLimit: 0.6
+  depthMovementLimit: 0.5
   clampHorizontalToScreen: 1
   horizontalScreenEdgePadding: 0
   screenEdgePadding: 0
@@ -8225,8 +8226,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.5573235, y: 0.31555793, z: 2.1765177}
-  m_Center: {x: 0.0130774025, y: 1.0818106, z: -0.076746896}
+  m_Size: {x: 1.5573232, y: 0.31555793, z: 1.0608377}
+  m_Center: {x: 0.0130774025, y: 1.0818106, z: 0.0014931128}
 --- !u!1 &4704557892592109927
 GameObject:
   m_ObjectHideFlags: 0
@@ -11510,7 +11511,7 @@ Transform:
   m_GameObject: {fileID: 2047403855979113262}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.105, z: 0}
   m_LocalScale: {x: 0.483821, y: 0.34575754, z: 0.5268704}
   m_ConstrainProportionsScale: 0
   m_Children: []
