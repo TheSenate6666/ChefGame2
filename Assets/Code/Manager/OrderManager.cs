@@ -9,17 +9,15 @@ namespace ChefGame.Managers
     {
         public static OrderManager Instance { get; private set; }
 
-        [Header("Config")]
-        [SerializeField] private int maxConcurrentOrders = 4;
-        [SerializeField] private float orderSpawnInterval = 7f;
-        [SerializeField] private List<Recipe> availableRecipes = new List<Recipe>();
+        [Header("Recipe Pool")]
+        [SerializeField] private List<Recipe> recipePool = new List<Recipe>();
+        [SerializeField] private int maxActiveOrders = 3;
 
         [Header("UI References")]
         [SerializeField] private Transform orderContainer;
         [SerializeField] private GameObject orderCardPrefab;
 
         private readonly List<OrderCardUI> activeOrders = new List<OrderCardUI>();
-        private float spawnTimer;
         public int ViewerCount { get; private set; } = 100;
 
         private void Awake()
@@ -30,30 +28,22 @@ namespace ChefGame.Managers
 
         private void Start()
         {
-            for (int i = 0; i < 3; i++)
+            InitializeOrderCards();
+        }
+
+        private void InitializeOrderCards()
+        {
+            for (int i = 0; i < maxActiveOrders; i++)
             {
-                SpawnOrder();
+                SpawnRandomOrder();
             }
         }
 
-        private void Update()
+        private void SpawnRandomOrder()
         {
-            spawnTimer += Time.deltaTime;
-            if (spawnTimer >= orderSpawnInterval)
-            {
-                spawnTimer = 0f;
-                if (activeOrders.Count < maxConcurrentOrders)
-                {
-                    SpawnOrder();
-                }
-            }
-        }
+            if (recipePool.Count == 0 || orderCardPrefab == null || orderContainer == null) return;
 
-        private void SpawnOrder()
-        {
-            if (availableRecipes.Count == 0 || orderCardPrefab == null) return;
-
-            Recipe randomRecipe = availableRecipes[Random.Range(0, availableRecipes.Count)];
+            Recipe randomRecipe = recipePool[Random.Range(0, recipePool.Count)];
             GameObject cardObj = Instantiate(orderCardPrefab, orderContainer);
 
             if (cardObj.TryGetComponent(out OrderCardUI cardUI))
@@ -69,6 +59,9 @@ namespace ChefGame.Managers
             activeOrders.Remove(expiredCard);
             ModifyViewers(-20);
             Debug.Log($"Order expired! Current viewers: {ViewerCount}");
+
+            // Immediately replenish the slot with a new randomized recipe
+            SpawnRandomOrder();
         }
 
         public List<Recipe> GetActiveOrderRecipes()
@@ -98,8 +91,12 @@ namespace ChefGame.Managers
 
                     Debug.Log($"Order completed! Gained: +{gainedViewers} viewers. Current total: {ViewerCount}");
 
-                    Destroy(activeOrders[i].gameObject);
+                    OrderCardUI completedCard = activeOrders[i];
                     activeOrders.RemoveAt(i);
+                    Destroy(completedCard.gameObject);
+
+                    // Immediately replenish the slot with a new randomized recipe
+                    SpawnRandomOrder();
                     return true;
                 }
             }

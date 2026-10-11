@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: da31793f916993c438d4b7e5ee6d3b45, type: 3}
-  m_Name: test1
+  m_Name: "Le Velout\xE9 Orange du Lapin"
   m_EditorClassIdentifier: Assembly-CSharp::ChefGame.Recipes.Recipe
-  recipeName: stew stewson
-  recipeIcon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  difficulty: 1
-  orderDuration: 50
+  recipeName: "Le Velout\xE9 Orange du Lapin "
+  recipeIcon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  difficulty: 2
+  orderDuration: 70
   recipeLines:
-  - ingredientType: 2
-    amount: 1
-  - ingredientType: 4
+  - ingredientType: 11
+    amount: 3
+  - ingredientType: 6
     amount: 1
   isCurrentRecipe: 0

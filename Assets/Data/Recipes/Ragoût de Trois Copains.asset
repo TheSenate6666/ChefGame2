@@ -10,15 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: da31793f916993c438d4b7e5ee6d3b45, type: 3}
-  m_Name: test4
+  m_Name: "Rago\xFBt de Trois Copains"
   m_EditorClassIdentifier: Assembly-CSharp::ChefGame.Recipes.Recipe
-  recipeName: stew's son
+  recipeName: "Rago\xFBt de Trois Copains"
   recipeIcon: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
-  difficulty: 2
+  difficulty: 3
   orderDuration: 80
   recipeLines:
-  - ingredientType: 7
+  - ingredientType: 12
+    amount: 1
+  - ingredientType: 2
     amount: 2
-  - ingredientType: 6
+  - ingredientType: 5
     amount: 1
   isCurrentRecipe: 0
