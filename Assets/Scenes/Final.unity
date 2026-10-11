@@ -2146,13 +2146,13 @@ Light:
   serializedVersion: 12
   m_Type: 1
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 1
+  m_Intensity: 0.5
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -3838,10 +3838,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf26a15e5e8491b4d81a97771047845a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  availableRecipes: []
+  cookingTimeWindowStart: 5
+  burnTimeThreshold: 10
   matchedRecipe: {fileID: 0}
   cookingQuality: 1
-  isCooking: 0
+  currentState: 0
+  excessPenaltyRate: 0.25
+  unrelatedIngredientPenalty: 0.35
+  minimumQualityFloor: 0.1
 --- !u!33 &981665554265767105
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -5091,7 +5095,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Unity.Splines.Examples.SplineRenderer
   m_LineRendererSettings:
     width: 0.1
-    material: {fileID: 602159189009765874, guid: 0de84c40d9a31a841a015049761d6711, type: 3}
+    material: {fileID: 2100000, guid: 4b18a5cbb77b1504d9c8a752b6ae2961, type: 2}
     subdivisions: 64
     startColor: {r: 1, g: 1, b: 1, a: 0}
     endColor: {r: 1, g: 1, b: 1, a: 0}
@@ -5275,7 +5279,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Unity.Splines.Examples.SplineRenderer
   m_LineRendererSettings:
     width: 0.1
-    material: {fileID: 602159189009765874, guid: 0de84c40d9a31a841a015049761d6711, type: 3}
+    material: {fileID: 2100000, guid: 4b18a5cbb77b1504d9c8a752b6ae2961, type: 2}
     subdivisions: 64
     startColor: {r: 1, g: 1, b: 1, a: 0}
     endColor: {r: 1, g: 1, b: 1, a: 0}
@@ -6215,8 +6219,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.44834483, y: 0.3440075, z: 0.6153017}
-  m_Center: {x: -0.056520525, y: 0.12351704, z: 0.31783468}
+  m_Size: {x: 0.44834483, y: 0.24770641, z: 0.6153017}
+  m_Center: {x: -0.056520525, y: 0.0753665, z: 0.31783468}
 --- !u!4 &3142530701450812003
 Transform:
   m_ObjectHideFlags: 0
@@ -6481,8 +6485,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.43351945, y: 0.30060673, z: 0.6376593}
-  m_Center: {x: 0.022948205, y: 0.10583067, z: 0.32468805}
+  m_Size: {x: 0.43351945, y: 0.19599438, z: 0.6376593}
+  m_Center: {x: 0.022948205, y: 0.07379866, z: 0.32468805}
 --- !u!1 &3328511028064241483
 GameObject:
   m_ObjectHideFlags: 0
