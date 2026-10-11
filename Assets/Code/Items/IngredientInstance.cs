@@ -7,6 +7,7 @@ namespace ChefGame.Items
     public sealed class IngredientInstance : ItemInstance
     {
         [SerializeField, HideInInspector] private bool hasBeenCut;
+        [SerializeField, HideInInspector] private bool hasBeenPeeled;
 
         [SerializeField] private IngredientType ingredientTypeOverride = IngredientType.None;
         private bool warnedMissingCutResults;
@@ -48,6 +49,19 @@ namespace ChefGame.Items
                 return false;
 
             hasBeenCut = true;
+            return true;
+        }
+
+        public bool TryGetPeeled()
+        {
+            IngredientDefinition ingredientData = IngredientData;
+            if (hasBeenPeeled || ingredientData == null || !ingredientData.CanBePeeled)
+                return false;
+
+            if (!ingredientData.GettingPeeled(gameObject))
+                return false;
+
+            hasBeenPeeled = true;
             return true;
         }
     }
