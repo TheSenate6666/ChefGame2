@@ -26,7 +26,7 @@ namespace ChefGame.Items
         private bool heldRigidbodyUsedGravity;
         private Collider[] playerColliders;
         private Collider[] heldColliders;
-        private readonly HashSet<IngredientSpawner> activeSpawners = new();
+        private readonly HashSet<MonoBehaviour> activeInteractionOverrides = new();
         private bool missingInteractActionLogged;
 
         public bool IsHoldingItem => isHoldingItem;
@@ -87,33 +87,46 @@ namespace ChefGame.Items
                 interactAction.canceled -= HandleInteractReleased;
             }
 
-            if (isHoldingItem)
-                DropItem();
+            // Clear held-item state even if the serialized/runtime flag has
+            // become out of sync with the tracked item reference.
+            DropItem();
         }
 
         private void HandleInteractPressed(InputAction.CallbackContext context)
         {
             // A nearby spawner owns this press. Otherwise a dropped item near
             // the spawner could be picked up before the spawner creates a fresh one.
-            if (!isHoldingItem && activeSpawners.Count == 0)
+            if (!isHoldingItem && activeInteractionOverrides.Count == 0)
                 TryPickUpItem();
         }
 
-        public void SetSpawnerInteraction(IngredientSpawner spawner, bool active)
+        public void SetInteractionOverride(MonoBehaviour source, bool active)
         {
-            if (spawner == null)
+            if (source == null)
                 return;
 
             if (active)
-                activeSpawners.Add(spawner);
+                activeInteractionOverrides.Add(source);
             else
-                activeSpawners.Remove(spawner);
+                activeInteractionOverrides.Remove(source);
+        }
+
+        /// <summary>Drops the currently held item if it is the specified object.</summary>
+        public bool TryDropHeldItem(Transform item)
+        {
+            if (item == null || heldItem != item)
+                return false;
+
+            DropItem();
+            return true;
         }
 
         private void HandleInteractReleased(InputAction.CallbackContext context)
         {
-            if (isHoldingItem)
-                DropItem();
+            // A release always ends the hold. DropItem is safe when already
+            // empty and also clears stale references/flags left by an item
+            // being destroyed or changed by another system.
+            DropItem();
         }
 
         private void TryPickUpItem()
