@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -46,12 +47,14 @@ namespace ChefGame.Input
         private InputAction backwardAction;
         private InputAction forwardAction;
         private InputAction interactAction;
+        private InputAction pressAction;
         private Rigidbody movementRigidbody;
         private Gamepad assignedGamepad;
         private Vector3 movementCenter;
         private Collider screenBoundsCollider;
 
         public InputAction InteractAction => interactAction;
+        public InputAction PressAction => pressAction;
 
         private string BindingGroup => inputScheme switch
         {
@@ -60,6 +63,8 @@ namespace ChefGame.Input
             InputScheme.Gamepad => "Gamepad",
             _ => "WASD"
         };
+
+        public static event Action OnPressPerformed;
 
         private void Awake()
         {
@@ -95,6 +100,7 @@ namespace ChefGame.Input
             backwardAction = gameplayMap.FindAction("Backward", true);
             forwardAction = gameplayMap.FindAction("Forward", true);
             interactAction = gameplayMap.FindAction("Interact", true);
+            pressAction = gameplayMap.FindAction("Press", true);
 
         }
 
@@ -115,6 +121,11 @@ namespace ChefGame.Input
                 // changed in the Inspector while the component was disabled.
                 gameplayMap.bindingMask = InputBinding.MaskByGroup(BindingGroup);
                 gameplayMap.Enable();
+            }
+            
+            if (pressAction != null)
+            {
+                pressAction.performed += OnPressPerformed;
             }
         }
 
@@ -369,7 +380,13 @@ private void OnDestroy()
     if (runtimeActions != null)
         Destroy(runtimeActions);
 }
+
+    private void OnPressAction(InputAction.CallbackContext context)
+    {
+        if (context.started) {OnPressPerformed.Invoke();}
+    }
 }
+    
 
 
 
