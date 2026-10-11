@@ -10,7 +10,6 @@ namespace ChefGame.Equipments
         private bool isHandsOnMe = false;
         public static event Action<bool> OnStoveToggled;
 
-
         private void OnEnable()
         {
             LocalCoopPlayerController.OnPressPerformed += ToggleStove;
@@ -18,32 +17,28 @@ namespace ChefGame.Equipments
 
         private void OnDisable()
         {
-           LocalCoopPlayerController.OnPressPerformed -= ToggleStove;
+            LocalCoopPlayerController.OnPressPerformed -= ToggleStove;
         }
-
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!other.gameObject.CompareTag("Hand")) return;
-            
-          
-            isHandsOnMe = true;
+            if (other.CompareTag("Hand"))
+                isHandsOnMe = true;
         }
 
         private void OnTriggerExit(Collider other)
         {
-            if (!other.gameObject.CompareTag("Hand")) return;
-           
-            isHandsOnMe = false;
+            if (other.CompareTag("Hand"))
+                isHandsOnMe = false;
         }
-        
 
         private void ToggleStove()
         {
             if (!isHandsOnMe) return;
-            isStoveOn =  !isStoveOn;
+
+            isStoveOn = !isStoveOn;
             OnStoveToggled?.Invoke(isStoveOn);
-            Debug.Log("Stove Status: " + isStoveOn);
+            Debug.Log($"Stove Status: {isStoveOn}");
         }
     }
 }
