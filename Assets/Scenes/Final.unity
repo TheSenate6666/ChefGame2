@@ -2231,13 +2231,13 @@ Light:
   serializedVersion: 12
   m_Type: 1
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 1
+  m_Intensity: 0.5
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -4059,6 +4059,7 @@ MonoBehaviour:
   excessPenaltyRate: 0.25
   unrelatedIngredientPenalty: 0.35
   minimumQualityFloor: 0.1
+  currentIngredients: []
 --- !u!33 &981665554265767105
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -4431,6 +4432,79 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1001 &1317808334277664185
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 110164455546560616, guid: 5db7194219402714c8d53e664e98a534, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1876285663437969644, guid: 5db7194219402714c8d53e664e98a534, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5781660082561955916, guid: 5db7194219402714c8d53e664e98a534, type: 3}
+      propertyPath: m_Name
+      value: Kitchen v5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5781660082561955916, guid: 5db7194219402714c8d53e664e98a534, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6590813111494206198, guid: 5db7194219402714c8d53e664e98a534, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 7.755
+      objectReference: {fileID: 0}
+    - target: {fileID: 6590813111494206198, guid: 5db7194219402714c8d53e664e98a534, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 11.962
+      objectReference: {fileID: 0}
+    - target: {fileID: 6590813111494206198, guid: 5db7194219402714c8d53e664e98a534, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 27.431
+      objectReference: {fileID: 0}
+    - target: {fileID: 6590813111494206198, guid: 5db7194219402714c8d53e664e98a534, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.0022254763
+      objectReference: {fileID: 0}
+    - target: {fileID: 6590813111494206198, guid: 5db7194219402714c8d53e664e98a534, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6590813111494206198, guid: 5db7194219402714c8d53e664e98a534, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.99999756
+      objectReference: {fileID: 0}
+    - target: {fileID: 6590813111494206198, guid: 5db7194219402714c8d53e664e98a534, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6590813111494206198, guid: 5db7194219402714c8d53e664e98a534, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6590813111494206198, guid: 5db7194219402714c8d53e664e98a534, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6590813111494206198, guid: 5db7194219402714c8d53e664e98a534, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8093246716888806490, guid: 5db7194219402714c8d53e664e98a534, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5db7194219402714c8d53e664e98a534, type: 3}
 --- !u!23 &1342028365689274162
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -11459,7 +11533,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!33 &7529204257992123379
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -13340,3 +13414,4 @@ SceneRoots:
   - {fileID: 1545899731}
   - {fileID: 3200555376702229099}
   - {fileID: 1187088890}
+  - {fileID: 1317808334277664185}
