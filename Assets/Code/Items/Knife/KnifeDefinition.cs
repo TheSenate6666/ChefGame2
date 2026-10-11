@@ -9,9 +9,12 @@ namespace ChefGame.Items
     {
         [SerializeField] private bool cutsIngredients = true;
         [SerializeField] private List<string> cuttableIngredientNames = new List<string> { "Tomato" };
+        [Header("Knife effect")]
+        [SerializeField] private GameObject knifeEffect;
 
         public override ItemType TypeId => ItemType.Knife;
         public bool CutsIngredients => cutsIngredients;
+        public GameObject KnifeEffect => knifeEffect;
 
         public bool CanCut(string ingredientName)
         {
