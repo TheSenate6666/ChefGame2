@@ -10,10 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: da31793f916993c438d4b7e5ee6d3b45, type: 3}
-  m_Name: recipetest
+  m_Name: test2
   m_EditorClassIdentifier: Assembly-CSharp::ChefGame.Recipes.Recipe
-  difficulty: 3
-  recipeName: you
-  recipeLines: []
+  difficulty: 2
+  recipeName: stew's son
+  recipeLines:
+  - ingredientType: 3
+    amount: 2
+  - ingredientType: 6
+    amount: 1
   isActive: 0
   nextRecipe: {fileID: 0}

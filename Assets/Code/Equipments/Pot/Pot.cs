@@ -1,9 +1,7 @@
-using System;
-using UnityEngine; 
+using UnityEngine;
 using System.Collections.Generic;
-using ChefGame.Items;
-using ChefGame.Recipes;
-
+using ChefGame.Items; //
+using ChefGame.Recipes; //
 
 namespace ChefGame.Equipments
 {
@@ -13,15 +11,15 @@ namespace ChefGame.Equipments
         [SerializeField] private Recipe activeRecipe;
         #endregion
 
-        #region RequiredIngr and Counting the ings.
-        private Dictionary<IngredientType,float> requiredIngredients = new Dictionary<IngredientType, float>();
-        private Dictionary<IngredientType,float> currentIngredients = new Dictionary<IngredientType, float>();
+        #region Required and Current Ingredients
+        
+        [SerializeField] private List<RecipeLine> requiredIngredients = new List<RecipeLine>();
+        [SerializeField] private List<RecipeLine> currentIngredients = new List<RecipeLine>();
         #endregion
         
         private bool isLidCoverClosed;
 
         #region Unity Functions
-
         private void OnEnable()
         {
             Stove.OnStoveToggled += ToggleLidCover;
@@ -36,7 +34,7 @@ namespace ChefGame.Equipments
         {
             if (activeRecipe != null)
             {
-                LoadRecipe(activeRecipe);        
+                LoadRecipe(activeRecipe);
             }
         }
         #endregion
@@ -45,8 +43,7 @@ namespace ChefGame.Equipments
         private void LoadRecipe(Recipe newRecipe)
         {
             activeRecipe = newRecipe;
-            activeRecipe.isActive = true;
-            requiredIngredients.Clear(); //List clearing
+            requiredIngredients.Clear();
             currentIngredients.Clear();
 
             if (activeRecipe == null)
@@ -55,16 +52,19 @@ namespace ChefGame.Equipments
                 return;
             }
 
+            activeRecipe.isActive = true;
+
+            // Populate the required list by creating copies of the recipe lines
             foreach (RecipeLine line in activeRecipe.recipeLines)
             {
-                if (!requiredIngredients.ContainsKey(line.ingredientType))
+                RecipeLine existingLine = requiredIngredients.Find(r => r.ingredientType == line.ingredientType); 
+                if (existingLine == null)
                 {
-                    requiredIngredients.Add(line.ingredientType,line.amount);
+                    requiredIngredients.Add(new RecipeLine { ingredientType = line.ingredientType, amount = line.amount }); 
                 }
-
                 else
                 {
-                    requiredIngredients[line.ingredientType] += line.amount; // if type already there, just increase the number
+                    existingLine.amount += line.amount; 
                 }
             }
         }
@@ -73,9 +73,10 @@ namespace ChefGame.Equipments
         public void OnTriggerEnter(Collider other)
         {
             IngredientInstance ingredient = other.GetComponent<IngredientInstance>();
-            if (ingredient != null &&  !isLidCoverClosed)
+            if (ingredient != null && !isLidCoverClosed)
             {
                 ProcessItem(ingredient);
+                Debug.Log($"{ingredient.GetName()} has been added to the pot");
             }
         }
 
@@ -83,22 +84,31 @@ namespace ChefGame.Equipments
         {
             IngredientType type = ingredient.GetIngredientType();
             
-            if (type == IngredientType.None) {Debug.LogError($"Ingredient type none: {ingredient.gameObject.name}"); return; }
+            if (type == IngredientType.None) 
+            {
+                Debug.LogError($"Ingredient type none: {ingredient.gameObject.name}"); 
+                return; 
+            }
 
             float quantity = 1f;
-            if (currentIngredients.ContainsKey(type))
-            {
-                currentIngredients[type] += quantity;
-            }
-            else 
-            { 
-                currentIngredients.Add(type,quantity);
-            }
+
             
-            if (requiredIngredients.ContainsKey(type) && requiredIngredients[type] > 0)
+            RecipeLine currentLine = currentIngredients.Find(item => item.ingredientType == type);
+            if (currentLine != null)
             {
-                requiredIngredients[type] -= quantity;
-                Debug.Log($"Added {type}. Remaining needed: {requiredIngredients[type]}");
+                currentLine.amount += quantity; 
+            }
+            else
+            {
+                currentIngredients.Add(new RecipeLine { ingredientType = type, amount = quantity });
+            }
+
+            
+            RecipeLine reqLine = requiredIngredients.Find(item => item.ingredientType == type); 
+            if (reqLine != null && reqLine.amount > 0)
+            {
+                reqLine.amount -= quantity; 
+                Debug.Log($"Added {type}. Remaining needed: {reqLine.amount}"); 
             }
 
             Destroy(ingredient.gameObject);
@@ -107,16 +117,23 @@ namespace ChefGame.Equipments
         private void ToggleLidCover(bool isLidCovered)
         {
             isLidCoverClosed = isLidCovered;
-            activeRecipe.isActive = false;
+            if (activeRecipe != null)
+            {
+                activeRecipe.isActive = false;
+            }
             CheckNextRecipe();    
         }
         
         private void CheckNextRecipe()
         {
-            if (activeRecipe.nextRecipe == null) {Debug.Log("No recipes left");}
+            if (activeRecipe == null || activeRecipe.nextRecipe == null) 
+            {
+                Debug.Log("No recipes left");
+                return;
+            }
+            
             activeRecipe = activeRecipe.nextRecipe;
             LoadRecipe(activeRecipe);
         }
     }
 }
-    

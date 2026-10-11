@@ -15,8 +15,8 @@ namespace ChefGame.Equipments
             if (other.gameObject.CompareTag("Hand"))
             {
                 //check interact button
-                isStoveOn = !isStoveOn;
-                OnStoveToggled.Invoke(isStoveOn);
+                //isStoveOn = !isStoveOn;
+                //OnStoveToggled.Invoke(isStoveOn);
             }
         }
     }
