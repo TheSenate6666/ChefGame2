@@ -1010,7 +1010,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 80
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -2152,6 +2152,81 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3374430819377205862}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1896206986
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3127103485332316301, guid: 2cc384ac75032624782b8f214e61e93f, type: 3}
+      propertyPath: m_Name
+      value: ShoulderRight2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4868360273207359787, guid: 2cc384ac75032624782b8f214e61e93f, type: 3}
+      propertyPath: m_Name
+      value: ShoulderLeft2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7110371134724164786, guid: 2cc384ac75032624782b8f214e61e93f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 23.874844
+      objectReference: {fileID: 0}
+    - target: {fileID: 7110371134724164786, guid: 2cc384ac75032624782b8f214e61e93f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 12.425
+      objectReference: {fileID: 0}
+    - target: {fileID: 7110371134724164786, guid: 2cc384ac75032624782b8f214e61e93f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 25.513384
+      objectReference: {fileID: 0}
+    - target: {fileID: 7110371134724164786, guid: 2cc384ac75032624782b8f214e61e93f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.0022254763
+      objectReference: {fileID: 0}
+    - target: {fileID: 7110371134724164786, guid: 2cc384ac75032624782b8f214e61e93f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7110371134724164786, guid: 2cc384ac75032624782b8f214e61e93f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.99999756
+      objectReference: {fileID: 0}
+    - target: {fileID: 7110371134724164786, guid: 2cc384ac75032624782b8f214e61e93f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7110371134724164786, guid: 2cc384ac75032624782b8f214e61e93f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7110371134724164786, guid: 2cc384ac75032624782b8f214e61e93f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -179.745
+      objectReference: {fileID: 0}
+    - target: {fileID: 7110371134724164786, guid: 2cc384ac75032624782b8f214e61e93f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7227148142847843651, guid: 2cc384ac75032624782b8f214e61e93f, type: 3}
+      propertyPath: m_Name
+      value: Kochv2 (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2cc384ac75032624782b8f214e61e93f, type: 3}
+--- !u!4 &1896206987 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1569306288389380628, guid: 2cc384ac75032624782b8f214e61e93f, type: 3}
+  m_PrefabInstance: {fileID: 1896206986}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1896206988 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5387879819357516455, guid: 2cc384ac75032624782b8f214e61e93f, type: 3}
+  m_PrefabInstance: {fileID: 1896206986}
+  m_PrefabAsset: {fileID: 0}
 --- !u!65 &1902861035
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5390,7 +5465,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f052ad2a98302944ab373a9dd76a0238, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WobblyArm
-  shoulder: {fileID: 795862410}
+  shoulder: {fileID: 1896206987}
   hand: {fileID: 2504542062774155274}
   knotCount: 8
   stiffness: 120
@@ -7481,7 +7556,7 @@ MonoBehaviour:
   movementZAcceleration: 6
   maximumSpeed: 5
   drag: 15
-  depthMovementLimit: 0.5
+  depthMovementLimit: 0.7
   clampHorizontalToScreen: 1
   horizontalScreenEdgePadding: 0
   screenEdgePadding: 0
@@ -8645,7 +8720,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5089491051999246268
 Transform:
   m_ObjectHideFlags: 0
@@ -12541,7 +12616,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f052ad2a98302944ab373a9dd76a0238, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WobblyArm
-  shoulder: {fileID: 1805621864}
+  shoulder: {fileID: 1896206988}
   hand: {fileID: 4913165017372173566}
   knotCount: 8
   stiffness: 120
@@ -12578,7 +12653,7 @@ MonoBehaviour:
   movementZAcceleration: 6
   maximumSpeed: 5
   drag: 15
-  depthMovementLimit: 0.5
+  depthMovementLimit: 0.7
   clampHorizontalToScreen: 1
   horizontalScreenEdgePadding: 0
   screenEdgePadding: 0
@@ -13341,3 +13416,4 @@ SceneRoots:
   - {fileID: 1545899731}
   - {fileID: 3200555376702229099}
   - {fileID: 1187088890}
+  - {fileID: 1896206986}
