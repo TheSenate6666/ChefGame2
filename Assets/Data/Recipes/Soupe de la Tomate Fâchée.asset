@@ -15,7 +15,7 @@ MonoBehaviour:
   recipeName: "Soupe de la Tomate F\xE2ch\xE9e"
   recipeIcon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   difficulty: 1
-  orderDuration: 60
+  orderDuration: 80
   recipeLines:
   - ingredientType: 2
     amount: 2

@@ -6,7 +6,7 @@ namespace ChefGame.Items
     [CreateAssetMenu(fileName = "Peeled Onion Half", menuName = "Chef Game/Items/Ingredients/Peeled Onion Half")]
     public sealed class PeeledOnionHalfDefinition : IngredientDefinition
     {
-        public override ItemType TypeId => ItemType.PeeledOnionHalf;
+        public override ItemType TypeId => ItemType.HalfOnion;
         public override bool CanBeCut => false;
     }
 }

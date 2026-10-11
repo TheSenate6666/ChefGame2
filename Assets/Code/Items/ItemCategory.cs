@@ -10,17 +10,23 @@ namespace ChefGame.Items
     /// <summary>Stable gameplay identity for a specific item definition.</summary>
     public enum ItemType
     {
-        None = 0,
+       None = 0,
         Tomato = 1,
-        TomatoHalf = 2,
-        Knife = 3,
-        Onion = 4,
-        PeeledOnion = 5,
-        Peeler = 6,
-        PeeledOnionHalf = 7,
-        Carrot = 8,
-        PeeledCarrot = 9,
-        CutCarrot = 10
+        HalfTomato = 2,
+        QuarterTomato = 3,
+        PeeledTomato = 4,
+        Onion = 5,
+        HalfOnion = 6,
+        QuarterOnion = 7,
+        PeeledOnion = 8,
+        Carrot = 9,
+        HalfCarrot = 10,
+        QuarterCarrot = 11,
+        PeeledCarrot = 12,
+
+        Knife = 13,
+
+        Peeler =14,
     }
 
     public enum IngredientType

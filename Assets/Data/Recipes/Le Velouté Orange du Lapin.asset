@@ -15,7 +15,7 @@ MonoBehaviour:
   recipeName: "Le Velout\xE9 Orange du Lapin "
   recipeIcon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   difficulty: 2
-  orderDuration: 70
+  orderDuration: 120
   recipeLines:
   - ingredientType: 11
     amount: 3
