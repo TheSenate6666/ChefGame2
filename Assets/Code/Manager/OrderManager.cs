@@ -20,22 +20,22 @@ namespace ChefGame.Managers
         [SerializeField] private GameObject orderCardPrefab;
         [SerializeField] private TextMeshProUGUI viewerCountText;
 
-        [Header("Viewer Fluctuation Settings")]
-        [SerializeField] private float countLerpSpeed = 2f;
-        [SerializeField] private float fluctuationInterval = 0.5f;
-        [SerializeField] private int fluctuationRange = 3;
+        [Header("Realistic Stream Fluctuation")]
+        [SerializeField] private float minJitterDelay = 0.25f;
+        [SerializeField] private float maxJitterDelay = 0.75f;
+        [SerializeField] private int maxFluctuationOffset = 4;
 
         [Header("AFK / Idle Viewer Drop")]
-        [SerializeField] private float idleTimeout = 20f;               // Inactivity threshold (seconds)
-        [SerializeField] private float idleDrainRatePerSecond = 3f;      // Viewers lost per second when idle
+        [SerializeField] private float idleTimeout = 20f;
+        [SerializeField] private float idleDrainRatePerSecond = 3f;
         [SerializeField] private int minViewerCount = 0;
 
         private readonly List<OrderCardUI> activeOrders = new List<OrderCardUI>();
 
         private float baseViewerCount = 100f;
-        private int currentTargetViewers;
-        private float displayedViewerCount;
-        private float fluctuationTimer;
+        private int currentJitterOffset = 0;
+        private float nextJitterTime = 0f;
+        private int lastRenderedCount = -1;
         private float idleTimer;
 
         public int ViewerCount => Mathf.RoundToInt(baseViewerCount);
@@ -58,9 +58,8 @@ namespace ChefGame.Managers
 
         private void Start()
         {
-            currentTargetViewers = Mathf.RoundToInt(baseViewerCount);
-            displayedViewerCount = baseViewerCount;
-            UpdateViewerDisplay((int)displayedViewerCount);
+            lastRenderedCount = Mathf.RoundToInt(baseViewerCount);
+            UpdateViewerDisplay(lastRenderedCount);
             InitializeOrderCards();
         }
 
@@ -79,29 +78,32 @@ namespace ChefGame.Managers
         {
             idleTimer += Time.deltaTime;
 
-            // If idle longer than 20 seconds, continuously drain viewers
             if (idleTimer >= idleTimeout)
             {
                 if (baseViewerCount > minViewerCount)
                 {
                     baseViewerCount = Mathf.Max(minViewerCount, baseViewerCount - (idleDrainRatePerSecond * Time.deltaTime));
-                    currentTargetViewers = Mathf.RoundToInt(baseViewerCount);
                 }
             }
         }
 
         private void HandleViewerFluctuation()
         {
-            fluctuationTimer += Time.deltaTime;
-            if (fluctuationTimer >= fluctuationInterval)
+            if (Time.time >= nextJitterTime)
             {
-                fluctuationTimer = 0f;
-                int jitter = Random.Range(-fluctuationRange, fluctuationRange + 1);
-                currentTargetViewers = Mathf.Max(minViewerCount, Mathf.RoundToInt(baseViewerCount) + jitter);
+                nextJitterTime = Time.time + Random.Range(minJitterDelay, maxJitterDelay);
+                
+                int step = Random.Range(-1, 2);
+                currentJitterOffset = Mathf.Clamp(currentJitterOffset + step, -maxFluctuationOffset, maxFluctuationOffset);
             }
 
-            displayedViewerCount = Mathf.Lerp(displayedViewerCount, currentTargetViewers, Time.deltaTime * countLerpSpeed);
-            UpdateViewerDisplay(Mathf.RoundToInt(displayedViewerCount));
+            int targetDisplay = Mathf.Max(minViewerCount, Mathf.RoundToInt(baseViewerCount) + currentJitterOffset);
+
+            if (targetDisplay != lastRenderedCount)
+            {
+                lastRenderedCount = targetDisplay;
+                UpdateViewerDisplay(targetDisplay);
+            }
         }
 
         private void InitializeOrderCards()
@@ -186,7 +188,6 @@ namespace ChefGame.Managers
         private void ModifyViewers(int amount)
         {
             baseViewerCount = Mathf.Max(minViewerCount, baseViewerCount + amount);
-            currentTargetViewers = Mathf.RoundToInt(baseViewerCount);
         }
 
         private void UpdateViewerDisplay(int count)
