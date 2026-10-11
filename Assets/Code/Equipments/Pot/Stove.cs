@@ -22,7 +22,7 @@ namespace ChefGame.Equipments
         }
 
 
-        private void OnCollisionEnter(Collision other)
+        private void OnTriggerEnter(Collider other)
         {
             if (!other.gameObject.CompareTag("Player")) return;
             
@@ -30,7 +30,7 @@ namespace ChefGame.Equipments
             isHandsOnMe = true;
         }
 
-        private void OnCollisionExit(Collision other)
+        private void OnTriggerExit(Collider other)
         {
             if (!other.gameObject.CompareTag("Player")) return;
 

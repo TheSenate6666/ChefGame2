@@ -34,7 +34,7 @@ Transform:
   m_LocalScale: {x: 0.53629136, y: 0.53629136, z: 0.4543217}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1481306633713732888}
+  - {fileID: 1823720946449806688}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5596606263912856387
@@ -154,7 +154,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 917d1e9896a2ba148bb54cd0cc43e726, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
---- !u!1 &8696002005428443859
+--- !u!1 &3009275525036092458
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -162,8 +162,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1481306633713732888}
-  - component: {fileID: 8283286857023248909}
+  - component: {fileID: 1823720946449806688}
+  - component: {fileID: 9198424839571624325}
   m_Layer: 0
   m_Name: trigger
   m_TagString: Untagged
@@ -171,13 +171,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1481306633713732888
+--- !u!4 &1823720946449806688
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8696002005428443859}
+  m_GameObject: {fileID: 3009275525036092458}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -186,13 +186,13 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3865071149601450715}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &8283286857023248909
+--- !u!65 &9198424839571624325
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8696002005428443859}
+  m_GameObject: {fileID: 3009275525036092458}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -205,5 +205,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.0467569, y: 1.1080121, z: 1.2493633}
-  m_Center: {x: 0.003156663, y: 0.0540067, z: -0.021682695}
+  m_Size: {x: 1.3206054, y: 1, z: 1.3265398}
+  m_Center: {x: -0.0489098, y: 0, z: 0.017491808}
