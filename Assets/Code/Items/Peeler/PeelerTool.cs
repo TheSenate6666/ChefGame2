@@ -1,4 +1,6 @@
 using UnityEngine;
+using MoreMountains.Feedbacks;
+
 
 namespace ChefGame.Items
 {
@@ -10,6 +12,13 @@ namespace ChefGame.Items
         private PeelerDefinition definition;
         private Transform vfxLocation;
 
+        private MMF_Player peelFeedback;
+
+
+        private void Start()
+        {
+            peelFeedback = GameObject.Find("PeelFeedback")?.GetComponent<MMF_Player>();
+        }
         private void Awake()
         {
             if (!GetComponent<Collider>().isTrigger)
@@ -60,6 +69,11 @@ namespace ChefGame.Items
             // Particle effects should clean themselves up after their longest particle lifetime.
             // Use a short fallback for non-particle prefabs so spawned effects do not accumulate.
             Destroy(effect, lifetime > 0f ? lifetime : 5f);
+
+            if (peelFeedback != null)
+            {
+                peelFeedback.PlayFeedbacks();
+            }
         }
     }
 }

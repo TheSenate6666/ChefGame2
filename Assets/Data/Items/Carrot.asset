@@ -16,6 +16,7 @@ MonoBehaviour:
   description: An unpeeled carrot. Use a peeler before cutting.
   canBeCut: 0
   canBePeeled: 1
+  peelEffectPrefab: {fileID: 5184478001212435664, guid: bfd10d8517f53c7458dedeb9ae876649, type: 3}
   peeledResultPrefab: {fileID: 3211758553485303005, guid: 9a0f0f4b957a4e64bca131aad1a6f112, type: 3}
   cutEffectPrefab: {fileID: 5184478001212435664, guid: bfd10d8517f53c7458dedeb9ae876649, type: 3}
   cutResultPrefabs: []
