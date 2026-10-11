@@ -12,7 +12,6 @@ namespace ChefGame.Items
         public string Description => description;
         public abstract ItemType TypeId { get; }
         public abstract ItemCategory Category { get; }
-
         
     }
 }

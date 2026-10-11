@@ -178,14 +178,26 @@ namespace ChefGame.Items
                 heldRigidbody.isKinematic = true;
                 heldRigidbody.useGravity = false;
             }
-
+            //Ingredient being held info
+            IngredientInstance ingredientInstance = item.GetComponent<IngredientInstance>();
+            if (ingredientInstance != null)
+            {
+                ingredientInstance.isBeingHeld = true;
+                
+            }
+            
             isHoldingItem = true;
         }
 
         private void DropItem()
         {
             if (heldItem != null)
+            {
+                IngredientInstance ingredientInstance = heldItem.GetComponent<IngredientInstance>();
+                if (ingredientInstance != null) {ingredientInstance.isBeingHeld = false;} // Ingredient drop being held info
                 heldItem.SetParent(null, true);
+            }
+                
 
             if (heldColliders != null)
             {
@@ -208,6 +220,8 @@ namespace ChefGame.Items
                 heldRigidbody.isKinematic = heldRigidbodyWasKinematic;
             }
 
+            
+            
             heldItem = null;
             heldRigidbody = null;
             heldColliders = null;

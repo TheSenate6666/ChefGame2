@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using ChefGame.Items; 
@@ -74,7 +75,17 @@ namespace ChefGame.Equipments
         public void OnTriggerEnter(Collider other)
         {
             IngredientInstance ingredient = other.GetComponent<IngredientInstance>();
-            if (ingredient != null && !isLidCoverClosed)
+            if (ingredient != null && !isLidCoverClosed && !ingredient.isBeingHeld)
+            {
+                ProcessItem(ingredient);
+                Debug.Log($"{ingredient.GetName()} has been added to the pot");
+            }
+        }
+
+        private void OnTriggerStay(Collider other)
+        {
+            IngredientInstance ingredient = other.GetComponent<IngredientInstance>();
+            if (ingredient != null && !isLidCoverClosed && !ingredient.isBeingHeld)
             {
                 ProcessItem(ingredient);
                 Debug.Log($"{ingredient.GetName()} has been added to the pot");

@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
-using System.Collections.Generic;
-using ChefGame.Equipments;
+using ChefGame.Input;
 
 namespace ChefGame.Equipments
 {
@@ -9,15 +8,30 @@ namespace ChefGame.Equipments
     {
         private bool isStoveOn = false;
         public static event Action<bool> OnStoveToggled;
+        
 
         public void OnCollisionEnter(Collision other)
         {
-            if (other.gameObject.CompareTag("Hand"))
+            if (!other.gameObject.CompareTag("Player")) return;
+            
+            LocalCoopPlayerController controller = other.gameObject.GetComponent<LocalCoopPlayerController>();
+            
+            Debug.Log("Hands on stove!");
+            if (controller != null && controller.InteractAction != null)
             {
-                //check interact button
-                //isStoveOn = !isStoveOn;
-                //OnStoveToggled.Invoke(isStoveOn);
+                Debug.Log("Got the controller");
+                if (controller.InteractAction.IsPressed())
+                {
+                    ToggleStove();
+                }
             }
+        }
+
+        private void ToggleStove()
+        {
+            isStoveOn =  !isStoveOn;
+            OnStoveToggled?.Invoke(isStoveOn);
+            Debug.Log("Stove Status: " + isStoveOn);
         }
     }
 }

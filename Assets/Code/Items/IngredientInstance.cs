@@ -8,6 +8,7 @@ namespace ChefGame.Items
     {
         [SerializeField, HideInInspector] private bool hasBeenCut;
         [SerializeField, HideInInspector] private bool hasBeenPeeled;
+        public bool isBeingHeld;
 
         [SerializeField] private IngredientType ingredientTypeOverride = IngredientType.None;
         private bool warnedMissingCutResults;
