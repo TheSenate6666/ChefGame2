@@ -37,6 +37,7 @@ namespace ChefGame.Managers
         private float nextJitterTime = 0f;
         private int lastRenderedCount = -1;
         private float idleTimer;
+        private Recipe lastSpawnedRecipe;
 
         public int ViewerCount => Mathf.RoundToInt(baseViewerCount);
 
@@ -92,7 +93,7 @@ namespace ChefGame.Managers
             if (Time.time >= nextJitterTime)
             {
                 nextJitterTime = Time.time + Random.Range(minJitterDelay, maxJitterDelay);
-                
+
                 int step = Random.Range(-1, 2);
                 currentJitterOffset = Mathf.Clamp(currentJitterOffset + step, -maxFluctuationOffset, maxFluctuationOffset);
             }
@@ -118,12 +119,28 @@ namespace ChefGame.Managers
         {
             if (recipePool.Count == 0 || orderCardPrefab == null || orderContainer == null) return;
 
-            Recipe randomRecipe = recipePool[Random.Range(0, recipePool.Count)];
+            Recipe selectedRecipe;
+
+            if (recipePool.Count > 1)
+            {
+                do
+                {
+                    selectedRecipe = recipePool[Random.Range(0, recipePool.Count)];
+                }
+                while (selectedRecipe == lastSpawnedRecipe);
+            }
+            else
+            {
+                selectedRecipe = recipePool[0];
+            }
+
+            lastSpawnedRecipe = selectedRecipe;
+
             GameObject cardObj = Instantiate(orderCardPrefab, orderContainer);
 
             if (cardObj.TryGetComponent(out OrderCardUI cardUI))
             {
-                cardUI.Setup(randomRecipe);
+                cardUI.Setup(selectedRecipe);
                 cardUI.OnOrderExpired += HandleOrderExpired;
                 activeOrders.Add(cardUI);
             }

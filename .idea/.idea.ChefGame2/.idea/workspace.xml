@@ -11,7 +11,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="59c63dc8-2e76-48ad-b582-763ab1f17d11" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Assets/Code/Equipments/Pot/Pot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/Equipments/Pot/Pot.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Code/Manager/OrderManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/Manager/OrderManager.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
