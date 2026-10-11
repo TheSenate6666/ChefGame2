@@ -65,6 +65,7 @@ namespace ChefGame.Input
         };
 
         public static event Action OnPressPerformed;
+        public static event Action OnAnyInputDetected;
 
         private void Awake()
         {
@@ -231,6 +232,7 @@ namespace ChefGame.Input
             Vector3 currentVelocity = movementRigidbody.linearVelocity;
             if (planarInput.sqrMagnitude > 0.0001f || Mathf.Abs(depthInput) > 0.0001f)
             {
+                OnAnyInputDetected?.Invoke();
                 // Integrate planar and depth acceleration separately while
                 // retaining collision velocity from the dynamic Rigidbody.
                 currentVelocity.x += planarInput.x * movementAcceleration * deltaTime;
@@ -389,7 +391,7 @@ private void OnDestroy()
 
     private void OnPressAction(InputAction.CallbackContext context)
     {
-        if (context.started) {OnPressPerformed?.Invoke(); Debug.Log("Pressed");}
+        if (context.started) {OnPressPerformed?.Invoke(); OnAnyInputDetected?.Invoke();}
     }
 }
     
