@@ -47,6 +47,7 @@ namespace ChefGame.Input
         private InputAction backwardAction;
         private InputAction forwardAction;
         private InputAction interactAction;
+        private InputAction bookAction;
         private InputAction pressAction;
         private Rigidbody movementRigidbody;
         private Gamepad assignedGamepad;
@@ -55,6 +56,7 @@ namespace ChefGame.Input
 
         public InputAction InteractAction => interactAction;
         public InputAction PressAction => pressAction;
+        public InputAction  BookAction => bookAction;
 
         private string BindingGroup => inputScheme switch
         {
@@ -66,6 +68,8 @@ namespace ChefGame.Input
 
         public static event Action OnPressPerformed;
         public static event Action OnAnyInputDetected;
+    
+        public static event Action<bool> OnBookHoldToggled;
 
         private void Awake()
         {
@@ -90,6 +94,8 @@ namespace ChefGame.Input
                 enabled = false;
                 return;
             }
+            
+            
 
             // Each player gets a private copy so its scheme mask and device
             // filter cannot affect the other player.
@@ -102,6 +108,7 @@ namespace ChefGame.Input
             forwardAction = gameplayMap.FindAction("Forward", true);
             interactAction = gameplayMap.FindAction("Interact", true);
             pressAction = gameplayMap.FindAction("Press", true);
+            bookAction = gameplayMap.FindAction("Book", true); 
 
         }
 
@@ -128,6 +135,12 @@ namespace ChefGame.Input
             {
                 pressAction.started += OnPressAction;
             }
+
+            if (bookAction != null)
+            {
+                bookAction.performed += OnBookStarted;
+                bookAction.canceled += OnBookCanceled;
+            }
             
         }
 
@@ -144,6 +157,12 @@ namespace ChefGame.Input
             if (pressAction != null)
             {
                 pressAction.started -= OnPressAction;
+            }
+
+            if (bookAction != null)
+            {
+                bookAction.performed -= OnBookStarted;
+                bookAction.canceled -= OnBookCanceled;
             }
         }
 
@@ -392,6 +411,17 @@ private void OnDestroy()
     private void OnPressAction(InputAction.CallbackContext context)
     {
         if (context.started) {OnPressPerformed?.Invoke(); OnAnyInputDetected?.Invoke();}
+    }
+
+    private void OnBookStarted(InputAction.CallbackContext context)
+    {
+        OnBookHoldToggled?.Invoke(true);
+        OnAnyInputDetected?.Invoke();
+    }
+    
+    private void OnBookCanceled(InputAction.CallbackContext context)
+    {
+        OnBookHoldToggled?.Invoke(false);
     }
 }
     

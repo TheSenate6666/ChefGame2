@@ -4,6 +4,7 @@ using TMPro;
 using ChefGame.Input;
 using ChefGame.Recipes;
 using ChefGame.UI;
+using UnityEngine.UI;
 
 namespace ChefGame.Managers
 {
@@ -19,6 +20,7 @@ namespace ChefGame.Managers
         [SerializeField] private Transform orderContainer;
         [SerializeField] private GameObject orderCardPrefab;
         [SerializeField] private TextMeshProUGUI viewerCountText;
+        [SerializeField] private Image menuCardImage;
 
         [Header("Realistic Stream Fluctuation")]
         [SerializeField] private float minJitterDelay = 0.25f;
@@ -50,11 +52,13 @@ namespace ChefGame.Managers
         private void OnEnable()
         {
             LocalCoopPlayerController.OnAnyInputDetected += ResetIdleTimer;
+            LocalCoopPlayerController.OnBookHoldToggled += SetMenuState;
         }
 
         private void OnDisable()
         {
             LocalCoopPlayerController.OnAnyInputDetected -= ResetIdleTimer;
+            LocalCoopPlayerController.OnBookHoldToggled -= SetMenuState;
         }
 
         private void Start()
@@ -62,6 +66,7 @@ namespace ChefGame.Managers
             lastRenderedCount = Mathf.RoundToInt(baseViewerCount);
             UpdateViewerDisplay(lastRenderedCount);
             InitializeOrderCards();
+            menuCardImage.gameObject.SetActive(false);
         }
 
         private void Update()
@@ -212,6 +217,14 @@ namespace ChefGame.Managers
             if (viewerCountText != null)
             {
                 viewerCountText.text = count.ToString();
+            }
+        }
+
+        private void SetMenuState(bool isOpen)
+        {
+            if (menuCardImage != null)
+            {
+                menuCardImage.gameObject.SetActive(isOpen);
             }
         }
     }
