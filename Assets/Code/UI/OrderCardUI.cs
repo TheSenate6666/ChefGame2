@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 using ChefGame.Recipes;
 
 namespace ChefGame.UI
@@ -9,8 +8,7 @@ namespace ChefGame.UI
     public class OrderCardUI : MonoBehaviour
     {
         [Header("UI References")]
-        [SerializeField] private Image dishIcon;
-        [SerializeField] private TextMeshProUGUI dishNameText;
+        [SerializeField] private Image cardImage;
         [SerializeField] private Image timerFillImage;
 
         private float remainingTime;
@@ -24,11 +22,8 @@ namespace ChefGame.UI
         {
             BoundRecipe = recipe;
 
-            if (dishIcon != null)
-                dishIcon.sprite = recipe.recipeIcon;
-
-            if (dishNameText != null)
-                dishNameText.text = recipe.recipeName;
+            if (cardImage != null)
+                cardImage.sprite = recipe.recipeIcon;
 
             totalTime = recipe.orderDuration;
             remainingTime = recipe.orderDuration;

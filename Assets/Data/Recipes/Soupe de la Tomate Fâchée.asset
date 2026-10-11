@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "Soupe de la Tomate F\xE2ch\xE9e"
   m_EditorClassIdentifier: Assembly-CSharp::ChefGame.Recipes.Recipe
   recipeName: "Soupe de la Tomate F\xE2ch\xE9e"
-  recipeIcon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  recipeIcon: {fileID: 21300000, guid: 7336610d213fbea48841aa0a51f8e344, type: 3}
   difficulty: 1
   orderDuration: 80
   recipeLines:
