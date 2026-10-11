@@ -1114,6 +1114,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1558989879 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8607267736436619686, guid: 574e8f0e00a323d4d9770d80bf3d26aa, type: 3}
+  m_PrefabInstance: {fileID: 2794790208670321532}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!1 &1639089855
 GameObject:
   m_ObjectHideFlags: 0
@@ -1738,6 +1749,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7455182860712398109, guid: 3d12856f7419ee043b37c66441aa70eb, type: 3}
+      propertyPath: menuCardImage
+      value: 
+      objectReference: {fileID: 1558989879}
     - target: {fileID: 7455182860712398109, guid: 3d12856f7419ee043b37c66441aa70eb, type: 3}
       propertyPath: orderContainer
       value: 
