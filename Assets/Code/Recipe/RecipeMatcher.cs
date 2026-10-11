@@ -7,7 +7,7 @@ namespace ChefGame.Recipes
     public struct RecipeMatchResult
     {
         public Recipe MatchedRecipe;
-        public float QualityMultiplier; // 1.0f = %100, 0.5f = %50 score etc.
+        public float QualityMultiplier;
         public bool IsValid => MatchedRecipe != null;
     }
 
@@ -15,14 +15,17 @@ namespace ChefGame.Recipes
     {
         public static RecipeMatchResult EvaluateIngredients(
             List<Recipe> allRecipes,
-            Dictionary<IngredientType, float> currentIngredients)
+            Dictionary<IngredientType, float> currentIngredients,
+            float excessPenaltyRate = 0.25f,
+            float unrelatedPenaltyFlat = 0.35f,
+            float minQualityFloor = 0.1f)
         {
             Recipe bestRecipe = null;
             float highestQuality = 0f;
 
             foreach (Recipe recipe in allRecipes)
             {
-                if (CanBeRecipe(recipe, currentIngredients, out float quality))
+                if (CanBeRecipe(recipe, currentIngredients, excessPenaltyRate, unrelatedPenaltyFlat, minQualityFloor, out float quality))
                 {
                     if (quality > highestQuality)
                     {
@@ -41,12 +44,14 @@ namespace ChefGame.Recipes
 
         private static bool CanBeRecipe(
             Recipe recipe, 
-            Dictionary<IngredientType, float> ingredients, 
+            Dictionary<IngredientType, float> ingredients,
+            float excessPenaltyRate,
+            float unrelatedPenaltyFlat,
+            float minQualityFloor,
             out float qualityMultiplier)
         {
             qualityMultiplier = 0f;
 
-            
             foreach (RecipeLine line in recipe.recipeLines)
             {
                 if (!ingredients.TryGetValue(line.ingredientType, out float amount))
@@ -56,7 +61,6 @@ namespace ChefGame.Recipes
                     return false; 
             }
 
-            
             float penalty = 0f;
 
             foreach (var kvp in ingredients)
@@ -68,23 +72,19 @@ namespace ChefGame.Recipes
 
                 if (targetLine != null)
                 {
-                    
                     if (currentAmount > targetLine.amount)
                     {
                         float excess = currentAmount - targetLine.amount;
-                        
-                        penalty += (excess / targetLine.amount) * 0.25f; 
+                        penalty += (excess / targetLine.amount) * excessPenaltyRate; 
                     }
                 }
                 else
                 {
-                   
-                    penalty += 0.35f; 
+                    penalty += unrelatedPenaltyFlat; 
                 }
             }
 
-            
-            qualityMultiplier = Mathf.Max(0.1f, 1f - penalty);
+            qualityMultiplier = Mathf.Max(minQualityFloor, 1f - penalty);
             return true;
         }
     }

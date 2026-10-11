@@ -24,6 +24,11 @@ namespace ChefGame.Equipments
         [SerializeField] private Recipe matchedRecipe;
         [SerializeField] private float cookingQuality = 1f;
         [SerializeField] private CookingState currentState = CookingState.Idle;
+        
+        [Header("Recipe Assessment Penalties")]
+        [SerializeField, Range(0f, 1f)] private float excessPenaltyRate = 0.25f;
+        [SerializeField, Range(0f, 1f)] private float unrelatedIngredientPenalty = 0.35f;
+        [SerializeField, Range(0f, 0.5f)] private float minimumQualityFloor = 0.10f;
 
         private readonly List<RecipeLine> currentIngredients = new List<RecipeLine>();
         private readonly HashSet<IngredientInstance> processedIngredients = new HashSet<IngredientInstance>();
@@ -159,7 +164,13 @@ namespace ChefGame.Equipments
                     ingredientMap[line.ingredientType] = line.amount;
             }
 
-            RecipeMatchResult result = RecipeMatcher.EvaluateIngredients(activeOrderRecipes, ingredientMap);
+            RecipeMatchResult result = RecipeMatcher.EvaluateIngredients(
+                activeOrderRecipes, 
+                ingredientMap, 
+                excessPenaltyRate, 
+                unrelatedIngredientPenalty, 
+                minimumQualityFloor
+            );
 
             if (result.IsValid)
             {
