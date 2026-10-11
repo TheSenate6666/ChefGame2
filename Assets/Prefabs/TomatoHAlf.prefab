@@ -81,8 +81,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.19406557, y: 0.22273564, z: 0.22808024}
+  m_Center: {x: -0.007729411, y: -0.03935659, z: 0.010236576}
 --- !u!114 &4982456840927922412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -97,6 +97,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ChefGame.Items.IngredientInstance
   definition: {fileID: 11400000, guid: e4d5e00edd4a85f42a3b4eaaf442f3f4, type: 2}
   hasBeenCut: 0
+  hasBeenPeeled: 0
+  ingredientTypeOverride: 0
 --- !u!1 &7426973745400665023
 GameObject:
   m_ObjectHideFlags: 0
@@ -138,7 +140,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7426973745400665023}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: -6530598999386414952, guid: 5b6634a513cb5b646aa0d26565c76778, type: 3}
 --- !u!23 &2392828894701418789
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -164,7 +166,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f3304ad62cd1aa149b01e5eadcb62b18, type: 2}
+  - {fileID: 2100000, guid: 224decabb8f749a4888116312c01e3b6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
