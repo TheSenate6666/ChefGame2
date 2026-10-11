@@ -18,24 +18,25 @@ namespace ChefGame.Equipments
 
         private void OnDisable()
         {
-            LocalCoopPlayerController.OnPressPerformed -= ToggleStove;
+           LocalCoopPlayerController.OnPressPerformed -= ToggleStove;
         }
 
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!other.gameObject.CompareTag("Player")) return;
+            if (!other.gameObject.CompareTag("Hand")) return;
             
-            Debug.Log("Hands on stove!");
+          
             isHandsOnMe = true;
         }
 
         private void OnTriggerExit(Collider other)
         {
-            if (!other.gameObject.CompareTag("Player")) return;
-
+            if (!other.gameObject.CompareTag("Hand")) return;
+           
             isHandsOnMe = false;
         }
+        
 
         private void ToggleStove()
         {

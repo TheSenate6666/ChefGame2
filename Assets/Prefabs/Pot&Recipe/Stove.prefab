@@ -11,9 +11,8 @@ GameObject:
   - component: {fileID: 3865071149601450715}
   - component: {fileID: 5596606263912856387}
   - component: {fileID: 1918681691891465064}
-  - component: {fileID: 6781883662866838945}
   - component: {fileID: 8627560416219075288}
-  - component: {fileID: 8106244321643550480}
+  - component: {fileID: 5034230351904358506}
   m_Layer: 0
   m_Name: Stove
   m_TagString: Untagged
@@ -34,7 +33,7 @@ Transform:
   m_LocalScale: {x: 0.53629136, y: 0.53629136, z: 0.4543217}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1823720946449806688}
+  - {fileID: 2782367562594045095}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5596606263912856387
@@ -94,27 +93,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &6781883662866838945
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1903336215043509147}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &8627560416219075288
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -142,19 +120,28 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
---- !u!114 &8106244321643550480
-MonoBehaviour:
+--- !u!65 &5034230351904358506
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1903336215043509147}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 917d1e9896a2ba148bb54cd0cc43e726, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
---- !u!1 &3009275525036092458
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1.0000001}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &5132153578622010254
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -162,22 +149,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1823720946449806688}
-  - component: {fileID: 9198424839571624325}
+  - component: {fileID: 2782367562594045095}
+  - component: {fileID: 8455951950676144617}
+  - component: {fileID: 2353977264916293791}
   m_Layer: 0
-  m_Name: trigger
+  m_Name: Trigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1823720946449806688
+--- !u!4 &2782367562594045095
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3009275525036092458}
+  m_GameObject: {fileID: 5132153578622010254}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -186,13 +174,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3865071149601450715}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &9198424839571624325
+--- !u!114 &8455951950676144617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5132153578622010254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 917d1e9896a2ba148bb54cd0cc43e726, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChefGame.Equipments.Stove
+--- !u!65 &2353977264916293791
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3009275525036092458}
+  m_GameObject: {fileID: 5132153578622010254}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -205,5 +205,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.3206054, y: 1, z: 1.3265398}
-  m_Center: {x: -0.0489098, y: 0, z: 0.017491808}
+  m_Size: {x: 1.1546639, y: 1.0916902, z: 1.2202785}
+  m_Center: {x: 0.008478766, y: 0.04584541, z: -0.023110881}
