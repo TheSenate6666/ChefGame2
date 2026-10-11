@@ -30,8 +30,8 @@ namespace ChefGame.Equipments
         [SerializeField, Range(0f, 1f)] private float unrelatedIngredientPenalty = 0.35f;
         [SerializeField, Range(0f, 0.5f)] private float minimumQualityFloor = 0.10f;
 
-        private readonly List<RecipeLine> currentIngredients = new List<RecipeLine>();
-        private readonly HashSet<IngredientInstance> processedIngredients = new HashSet<IngredientInstance>();
+        [SerializeField] private readonly List<RecipeLine> currentIngredients = new List<RecipeLine>();
+        [SerializeField] private readonly HashSet<IngredientInstance> processedIngredients = new HashSet<IngredientInstance>();
         
         private float cookingTimer;
         private bool isLidCoverClosed;
