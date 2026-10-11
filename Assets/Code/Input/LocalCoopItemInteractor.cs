@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 namespace ChefGame.Items
 {
@@ -25,10 +26,13 @@ namespace ChefGame.Items
         private bool heldRigidbodyUsedGravity;
         private Collider[] playerColliders;
         private Collider[] heldColliders;
+        private readonly HashSet<IngredientSpawner> activeSpawners = new();
         private bool missingInteractActionLogged;
 
         public bool IsHoldingItem => isHoldingItem;
         public Transform HeldItem => heldItem;
+        public Transform ItemHolder => itemHolder;
+        public InputAction InteractAction => playerController != null ? playerController.InteractAction : null;
 
         private void Awake()
         {
@@ -89,8 +93,21 @@ namespace ChefGame.Items
 
         private void HandleInteractPressed(InputAction.CallbackContext context)
         {
-            if (!isHoldingItem)
+            // A nearby spawner owns this press. Otherwise a dropped item near
+            // the spawner could be picked up before the spawner creates a fresh one.
+            if (!isHoldingItem && activeSpawners.Count == 0)
                 TryPickUpItem();
+        }
+
+        public void SetSpawnerInteraction(IngredientSpawner spawner, bool active)
+        {
+            if (spawner == null)
+                return;
+
+            if (active)
+                activeSpawners.Add(spawner);
+            else
+                activeSpawners.Remove(spawner);
         }
 
         private void HandleInteractReleased(InputAction.CallbackContext context)
@@ -135,7 +152,7 @@ namespace ChefGame.Items
             }
 
             if (nearestItem != null)
-                PickUpItem(nearestItem);
+                TryHoldItem(nearestItem);
         }
 
         private static Transform FindTaggedItemRoot(Transform candidate)
@@ -149,8 +166,12 @@ namespace ChefGame.Items
             return null;
         }
 
-        private void PickUpItem(Transform item)
+        /// <summary>Attaches an item to this player's holder using the normal pickup rules.</summary>
+        public bool TryHoldItem(Transform item)
         {
+            if (isHoldingItem || itemHolder == null || item == null)
+                return false;
+
             heldItem = item;
             heldItem.SetParent(itemHolder, true);
             heldItem.position = itemHolder.position;
@@ -180,6 +201,7 @@ namespace ChefGame.Items
             }
 
             isHoldingItem = true;
+            return true;
         }
 
         private void DropItem()
