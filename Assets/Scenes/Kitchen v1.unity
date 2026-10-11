@@ -249,13 +249,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1180994212}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.00024018953, y: -0.9934716, z: 0.11406047, w: 0.0020933056}
-  m_LocalPosition: {x: 23.90225, y: 13.942216, z: 23.434238}
+  m_LocalRotation: {x: -0.11405955, y: -0.0043042204, z: 0.00049398484, w: -0.99346447}
+  m_LocalPosition: {x: 23.900513, y: 13.942216, z: 22.575033}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 13.099, y: 0.496, z: 0}
 --- !u!1 &1939778887
 GameObject:
   m_ObjectHideFlags: 0
@@ -376,13 +376,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1939778887}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalRotation: {x: -0.10847329, y: -0.87594616, z: 0.4084603, w: -0.2326202}
+  m_LocalPosition: {x: 47.906937, y: 3, z: 45.90248}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 50, y: -209.745, z: 0}
 --- !u!4 &9891613543796236
 Transform:
   m_ObjectHideFlags: 0
@@ -600,8 +600,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 919132148074251202}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 23.902254, y: 11.949694, z: 20.34412}
+  m_LocalRotation: {x: -0, y: -0.99999756, z: -0, w: 0.0022254763}
+  m_LocalPosition: {x: 23.914282, y: 11.949694, z: 25.665104}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -637,7 +637,7 @@ Transform:
   - {fileID: 8327418414304859858}
   - {fileID: 1378643195029624409}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -179.745, z: 0}
 --- !u!54 &562841645836639418
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -747,7 +747,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faf5a9c3f88775c43a89628cc36f1761, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChefGame.Input.PlayerKnockback
-  knockbackImpulse: 300
+  knockbackImpulse: 1
   otherPlayerImpulseMultiplier: 1
   minimumImpactSpeed: 0.25
   knockbackCooldown: 0.2
@@ -1745,15 +1745,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9046247279992870822}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 30.14, y: 11.433, z: 20.798}
+  m_LocalRotation: {x: -0, y: -0.99999756, z: -0, w: 0.0022254763}
+  m_LocalPosition: {x: 17.671831, y: 11.433, z: 24.680845}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4292717470135534442}
   - {fileID: 4913165017372173566}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -179.745, z: 0}
 --- !u!1 &2446366929918834099
 GameObject:
   m_ObjectHideFlags: 0
@@ -2248,14 +2248,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3211758554317556859}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 22.43, y: 13.27, z: 21.62}
+  m_LocalRotation: {x: -0, y: -0.99999756, z: -0, w: 0.0022254763}
+  m_LocalPosition: {x: 25.38083, y: 13.27, z: 24.382679}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1303327262731772889}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -179.745, z: 0}
 --- !u!65 &3100188392654472678
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2275,8 +2275,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 0.41519928, z: 0.6942253}
-  m_Center: {x: 0, y: 0.08792114, z: 0.32189178}
+  m_Size: {x: 0.44834483, y: 0.3440075, z: 0.6153017}
+  m_Center: {x: -0.056520525, y: 0.12351704, z: 0.31783468}
 --- !u!1 &3107757685383223277
 GameObject:
   m_ObjectHideFlags: 0
@@ -2593,8 +2593,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 0.33060932, z: 0.60427094}
-  m_Center: {x: 0, y: 0.09082937, z: 0.3531685}
+  m_Size: {x: 0.43351945, y: 0.30060673, z: 0.6376593}
+  m_Center: {x: 0.022948205, y: 0.10583067, z: 0.32468805}
 --- !u!4 &3352432276846454626
 Transform:
   m_ObjectHideFlags: 0
@@ -3016,12 +3016,14 @@ MonoBehaviour:
   autoAssignGamepad: 1
   gamepadSlot: 0
   movementCamera: {fileID: 1180994215}
-  movementAcceleration: 40
-  movementZAcceleration: 20
+  movementAcceleration: 15
+  movementZAcceleration: 15
   maximumSpeed: 6
-  drag: 5
+  drag: 1
   depthMovementLimit: 0.5
-  screenEdgePadding: 0.03
+  clampHorizontalToScreen: 1
+  horizontalScreenEdgePadding: 0
+  screenEdgePadding: 0
 --- !u!4 &4118778989100019010
 Transform:
   m_ObjectHideFlags: 0
@@ -3476,7 +3478,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faf5a9c3f88775c43a89628cc36f1761, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChefGame.Input.PlayerKnockback
-  knockbackImpulse: 300
+  knockbackImpulse: 1
   otherPlayerImpulseMultiplier: 1
   minimumImpactSpeed: 0.25
   knockbackCooldown: 0.2
@@ -3786,15 +3788,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5084159545385774225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 23.941, y: 12.425, z: 20.496}
+  m_LocalRotation: {x: -0, y: -0.99999756, z: -0, w: 0.0022254763}
+  m_LocalPosition: {x: 23.874844, y: 12.425, z: 25.513384}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3352432276846454626}
   - {fileID: 7950929584604357210}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -179.745, z: 0}
 --- !u!33 &5641318320451397685
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -4348,7 +4350,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
@@ -5346,16 +5348,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChefGame.Input.LocalCoopPlayerController
   inputActions: {fileID: -944628639613478452, guid: c4c25e5b3d35a9846aaa6e72162d801b, type: 3}
-  inputScheme: 1
+  inputScheme: 0
   autoAssignGamepad: 1
   gamepadSlot: 0
   movementCamera: {fileID: 1180994215}
-  movementAcceleration: 40
-  movementZAcceleration: 20
+  movementAcceleration: 15
+  movementZAcceleration: 15
   maximumSpeed: 6
-  drag: 5
+  drag: 1
   depthMovementLimit: 0.5
-  screenEdgePadding: 0.03
+  clampHorizontalToScreen: 1
+  horizontalScreenEdgePadding: 0
+  screenEdgePadding: 0
 --- !u!1 &8715528381937840552
 GameObject:
   m_ObjectHideFlags: 0
@@ -5644,15 +5648,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4830365709393242166}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 24.341, y: 12.833, z: 20.745}
+  m_LocalRotation: {x: -0, y: -0.99999756, z: -0, w: 0.0022254763}
+  m_LocalPosition: {x: 23.471, y: 12.833, z: 24.708}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2835605999573807931}
   - {fileID: 2504542062774155274}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -179.745, z: 0}
 --- !u!4 &9110437653617595662
 Transform:
   m_ObjectHideFlags: 0

@@ -14,6 +14,7 @@ namespace ChefGame.Input
     public sealed class LocalCoopPlayerController : MonoBehaviour
     {
         private static readonly List<LocalCoopPlayerController> GamepadControllers = new();
+        
 
         public enum InputScheme
         {
@@ -32,7 +33,12 @@ namespace ChefGame.Input
         [SerializeField, Min(0f)] private float maximumSpeed = 4.5f;
         [SerializeField, Min(0f)] private float drag = 7f;
         [SerializeField, Min(0f)] private float depthMovementLimit = 2f;
-        [SerializeField, Range(0f, 0.25f)] private float screenEdgePadding = 0.03f;
+        [SerializeField, Tooltip("When disabled, horizontal movement is not clamped to the camera edges.")]
+        private bool clampHorizontalToScreen = true;
+        [SerializeField, Range(0f, 0.25f), Tooltip("Horizontal edge margin as a fraction of the viewport. Kept much smaller than the vertical margin.")]
+        private float horizontalScreenEdgePadding = 0.005f;
+        [SerializeField, Range(0f, 0.25f), Tooltip("Vertical edge margin as a fraction of the viewport.")]
+        private float screenEdgePadding = 0.03f;
 
         private InputActionAsset runtimeActions;
         private InputActionMap gameplayMap;
@@ -43,7 +49,7 @@ namespace ChefGame.Input
         private Rigidbody movementRigidbody;
         private Gamepad assignedGamepad;
         private Vector3 movementCenter;
-        private Renderer[] visualRenderers;
+        private Collider screenBoundsCollider;
 
         public InputAction InteractAction => interactAction;
 
@@ -58,8 +64,8 @@ namespace ChefGame.Input
         private void Awake()
         {
             movementCenter = transform.position;
-            visualRenderers = GetComponentsInChildren<Renderer>();
             movementRigidbody = GetComponent<Rigidbody>();
+            FindScreenBoundsCollider();
 
             if (movementRigidbody == null)
                 Debug.LogWarning($"{nameof(LocalCoopPlayerController)} on '{name}' has no Rigidbody on its root. Physics-aware movement requires a root Rigidbody.", this);
@@ -238,94 +244,133 @@ namespace ChefGame.Input
             Vector3 boundaryCorrection = clampedPosition - proposedPosition;
             if (boundaryCorrection.sqrMagnitude > 0.000001f)
             {
-                Vector3 inwardDirection = boundaryCorrection.normalized;
-                float outwardSpeed = Vector3.Dot(currentVelocity, inwardDirection);
-                if (outwardSpeed < 0f)
-                    currentVelocity -= inwardDirection * outwardSpeed;
+                //Vector3 inwardDirection = boundaryCorrection.normalized;
+                //float outwardSpeed = Vector3.Dot(currentVelocity, inwardDirection);
+                //if (outwardSpeed < 0f)
+                    //currentVelocity -= inwardDirection * outwardSpeed;
 
                 // Correct position only when the hand reaches its depth or
                 // camera boundary; ordinary movement is handled by PhysX.
-                movementRigidbody.position = clampedPosition;
+                //movementRigidbody.position = clampedPosition;
+                currentVelocity = (clampedPosition - movementRigidbody.position) / deltaTime;
             }
 
             movementRigidbody.linearVelocity = currentVelocity;
         }
 
-        private Vector3 ClampToScreen(Vector3 position)
+        private const int MaxClampIterations = 4;
+
+private Vector3 ClampToScreen(Vector3 position)
+{
+    if (movementCamera == null)
+        return position;
+
+    Vector3 result = position;
+
+    for (int i = 0; i < MaxClampIterations; i++)
+    {
+        if (!TryGetViewportRect(result, out Vector2 min, out Vector2 max, out Vector3 pivotViewport))
+            return result;
+
+        float horizontalCorrection = 0f;
+        if (clampHorizontalToScreen)
         {
-            if (movementCamera == null)
-                return position;
-
-            Vector3 viewportPosition = movementCamera.WorldToViewportPoint(position);
-            if (viewportPosition.z <= movementCamera.nearClipPlane)
-                return position;
-
-            Vector3 rendererOffset = position - transform.position;
-            float minX = float.PositiveInfinity;
-            float maxX = float.NegativeInfinity;
-            float minY = float.PositiveInfinity;
-            float maxY = float.NegativeInfinity;
-
-            foreach (Renderer visualRenderer in visualRenderers)
-            {
-                if (visualRenderer == null || !visualRenderer.enabled)
-                    continue;
-
-                Bounds bounds = visualRenderer.bounds;
-                Vector3 center = bounds.center + rendererOffset;
-                Vector3 extents = bounds.extents;
-
-                for (int cornerIndex = 0; cornerIndex < 8; cornerIndex++)
-                {
-                    Vector3 corner = center + new Vector3(
-                        (cornerIndex & 1) == 0 ? -extents.x : extents.x,
-                        (cornerIndex & 2) == 0 ? -extents.y : extents.y,
-                        (cornerIndex & 4) == 0 ? -extents.z : extents.z);
-                    Vector3 viewportCorner = movementCamera.WorldToViewportPoint(corner);
-                    if (viewportCorner.z <= movementCamera.nearClipPlane)
-                        continue;
-
-                    minX = Mathf.Min(minX, viewportCorner.x);
-                    maxX = Mathf.Max(maxX, viewportCorner.x);
-                    minY = Mathf.Min(minY, viewportCorner.y);
-                    maxY = Mathf.Max(maxY, viewportCorner.y);
-                }
-            }
-
-            // If there is no visible renderer, constrain the hand pivot itself.
-            if (float.IsPositiveInfinity(minX))
-            {
-                minX = maxX = viewportPosition.x;
-                minY = maxY = viewportPosition.y;
-            }
-
-            float horizontalCorrection = minX < screenEdgePadding
-                ? screenEdgePadding - minX
-                : maxX > 1f - screenEdgePadding ? 1f - screenEdgePadding - maxX : 0f;
-            float verticalCorrection = minY < screenEdgePadding
-                ? screenEdgePadding - minY
-                : maxY > 1f - screenEdgePadding ? 1f - screenEdgePadding - maxY : 0f;
-
-            if (horizontalCorrection == 0f && verticalCorrection == 0f)
-                return position;
-
-            Vector3 adjustedViewportPosition = new Vector3(
-                viewportPosition.x + horizontalCorrection,
-                viewportPosition.y + verticalCorrection,
-                viewportPosition.z);
-            Vector3 screenClampedPosition = movementCamera.ViewportToWorldPoint(adjustedViewportPosition);
-
-            // The current Main Camera looks straight along world Z, so screen
-            // correction should not alter the hand's clamped depth.
-            screenClampedPosition.z = position.z;
-            return screenClampedPosition;
+            if (min.x < horizontalScreenEdgePadding)
+                horizontalCorrection = horizontalScreenEdgePadding - min.x;
+            else if (max.x > 1f - horizontalScreenEdgePadding)
+                horizontalCorrection = 1f - horizontalScreenEdgePadding - max.x;
         }
 
-        private void OnDestroy()
-        {
-            if (runtimeActions != null)
-                Destroy(runtimeActions);
-        }
+        float verticalCorrection = 0f;
+        if (min.y < screenEdgePadding)
+            verticalCorrection = screenEdgePadding - min.y;
+        else if (max.y > 1f - screenEdgePadding)
+            verticalCorrection = 1f - screenEdgePadding - max.y;
 
+        if (Mathf.Abs(horizontalCorrection) < 0.00001f && Mathf.Abs(verticalCorrection) < 0.00001f)
+            return result;
+
+        Vector3 adjustedViewport = new Vector3(
+            pivotViewport.x + horizontalCorrection,
+            pivotViewport.y + verticalCorrection,
+            pivotViewport.z);
+
+        // Move the pivot along the camera ray, but keep it on its fixed-Z plane.
+        Ray ray = movementCamera.ViewportPointToRay(adjustedViewport);
+        Plane depthPlane = new Plane(Vector3.forward, new Vector3(0f, 0f, result.z));
+        if (!depthPlane.Raycast(ray, out float distance) || distance < 0f)
+            return result;
+
+        result = ray.GetPoint(distance);
     }
+
+    return result;
+}
+
+/// <summary>
+/// Viewport rectangle of the hand at the given position. Only the X/Y size of the
+/// hitbox is used (a flat rectangle at the hitbox's depth), so the camera pitch
+/// can't inflate the hand's on-screen size through the collider's Z extent.
+/// </summary>
+private bool TryGetViewportRect(Vector3 position, out Vector2 min, out Vector2 max, out Vector3 pivotViewport)
+{
+    pivotViewport = movementCamera.WorldToViewportPoint(position);
+    min = max = new Vector2(pivotViewport.x, pivotViewport.y);
+
+    if (pivotViewport.z <= movementCamera.nearClipPlane)
+        return false;
+
+    if (screenBoundsCollider == null)
+        return true;
+
+    Bounds bounds = screenBoundsCollider.bounds;
+    Vector3 center = bounds.center + (position - transform.position);
+    Vector3 extents = bounds.extents;
+
+    min = new Vector2(float.PositiveInfinity, float.PositiveInfinity);
+    max = new Vector2(float.NegativeInfinity, float.NegativeInfinity);
+
+    for (int cornerIndex = 0; cornerIndex < 4; cornerIndex++)
+    {
+        Vector3 corner = center + new Vector3(
+            (cornerIndex & 1) == 0 ? -extents.x : extents.x,
+            (cornerIndex & 2) == 0 ? -extents.y : extents.y,
+            0f);
+
+        Vector3 vp = movementCamera.WorldToViewportPoint(corner);
+        if (vp.z <= movementCamera.nearClipPlane)
+            continue;
+
+        min = Vector2.Min(min, new Vector2(vp.x, vp.y));
+        max = Vector2.Max(max, new Vector2(vp.x, vp.y));
+    }
+
+    if (float.IsPositiveInfinity(min.x))
+        min = max = new Vector2(pivotViewport.x, pivotViewport.y);
+
+    return true;
+}
+private void FindScreenBoundsCollider()
+{
+    Collider[] childColliders = GetComponentsInChildren<Collider>();
+    for (int i = 0; i < childColliders.Length; i++)
+    {
+        Collider candidate = childColliders[i];
+        if (candidate != null && candidate.enabled && candidate.CompareTag("Hand"))
+        {
+            screenBoundsCollider = candidate;
+            return;
+        }
+    }
+}
+
+private void OnDestroy()
+{
+    if (runtimeActions != null)
+        Destroy(runtimeActions);
+}
+}
+
+
+
 }
