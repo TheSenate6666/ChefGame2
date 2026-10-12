@@ -5,6 +5,7 @@ using ChefGame.Input;
 using ChefGame.Recipes;
 using ChefGame.UI;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 namespace ChefGame.Managers
 {
@@ -31,6 +32,11 @@ namespace ChefGame.Managers
         [SerializeField] private float idleTimeout = 20f;
         [SerializeField] private float idleDrainRatePerSecond = 3f;
         [SerializeField] private int minViewerCount = 0;
+
+        [Header("Game Over")]
+        [SerializeField] private string mainMenuSceneName = "MainMenu";
+
+        private bool isGameOver;
 
         private readonly List<OrderCardUI> activeOrders = new List<OrderCardUI>();
 
@@ -73,6 +79,7 @@ namespace ChefGame.Managers
         {
             HandleIdlePenalty();
             HandleViewerFluctuation();
+            CheckGameOver();
         }
 
         private void ResetIdleTimer()
@@ -210,6 +217,15 @@ namespace ChefGame.Managers
         private void ModifyViewers(int amount)
         {
             baseViewerCount = Mathf.Max(minViewerCount, baseViewerCount + amount);
+        }
+
+        private void CheckGameOver()
+        {
+            if (isGameOver) return;
+            if (ViewerCount > 0) return;
+
+            isGameOver = true;
+            SceneManager.LoadScene(mainMenuSceneName);
         }
 
         private void UpdateViewerDisplay(int count)
