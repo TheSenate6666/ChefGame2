@@ -14984,10 +14984,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ChefGame.Items.LocalCoopItemInteractor
   itemHolder: {fileID: 7100198957487390802}
   interactionCenter: {fileID: 2835605999573807931}
-  interactionRadius: 2
+  interactionRadius: 0.4
   itemLayers:
     serializedVersion: 2
     m_Bits: 4294967295
+  allowTakingFromOtherPlayers: 1
   isHoldingItem: 0
 --- !u!1 &5000568117266915971
 GameObject:
@@ -15037,10 +15038,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ChefGame.Items.LocalCoopItemInteractor
   itemHolder: {fileID: 5070192283432969241}
   interactionCenter: {fileID: 4292717470135534442}
-  interactionRadius: 2
+  interactionRadius: 0.4
   itemLayers:
     serializedVersion: 2
     m_Bits: 4294967295
+  allowTakingFromOtherPlayers: 1
   isHoldingItem: 0
 --- !u!4 &5070192283432969241
 Transform:
@@ -15777,6 +15779,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4965468348395766272}
   - component: {fileID: 303693289382385544}
+  - component: {fileID: 5317452193724702119}
   m_Layer: 0
   m_Name: Cheffe
   m_TagString: Untagged
@@ -15784,6 +15787,25 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &5317452193724702119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5317452193724702118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5226ddb9db980f44aad0d9b1e3937a57, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  smr: {fileID: 0}
+  shapeNames:
+  - MrBeast
+  - Badstuff
+  - Goodstuff
+  interval: 8
+  blendTime: 1
 --- !u!1 &5350462039104403846
 GameObject:
   m_ObjectHideFlags: 0

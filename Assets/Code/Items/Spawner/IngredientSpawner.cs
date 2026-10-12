@@ -1,18 +1,42 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace ChefGame.Items
 {
-    /// <summary>Spawns and immediately holds one configured item when a player presses Interact inside the trigger.</summary>
+    /// <summary>
+    /// Spawns and immediately holds one configured item when a player presses Interact
+    /// while their hand collider truly overlaps the spawn area. Range is checked at
+    /// press time (no stored enter/exit state), so it can never go stale.
+    /// </summary>
     [DisallowMultipleComponent]
     public sealed class IngredientSpawner : MonoBehaviour
     {
+        private static readonly List<IngredientSpawner> ActiveSpawners = new();
+
         [SerializeField] private Collider spawnArea;
         [SerializeField] private GameObject prefabToSpawn;
 
-        private readonly Dictionary<Collider, LocalCoopItemInteractor> occupants = new();
-        private readonly HashSet<LocalCoopItemInteractor> subscribedInteractors = new();
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics()
+        {
+            ActiveSpawners.Clear();
+        }
+
+        /// <summary>Returns the spawner the given hand colliders overlap right now, or null.</summary>
+        public static IngredientSpawner FindOverlapping(IReadOnlyList<Collider> handColliders)
+        {
+            if (handColliders == null)
+                return null;
+
+            for (int i = 0; i < ActiveSpawners.Count; i++)
+            {
+                IngredientSpawner spawner = ActiveSpawners[i];
+                if (spawner != null && spawner.Overlaps(handColliders))
+                    return spawner;
+            }
+
+            return null;
+        }
 
         private void Awake()
         {
@@ -23,152 +47,95 @@ namespace ChefGame.Items
                 Debug.LogError($"{nameof(IngredientSpawner)} on '{name}' requires a trigger collider assigned as its spawn area.", this);
         }
 
+        private void OnEnable()
+        {
+            if (!ActiveSpawners.Contains(this))
+                ActiveSpawners.Add(this);
+        }
+
         private void OnDisable()
         {
-            foreach (LocalCoopItemInteractor interactor in subscribedInteractors)
-            {
-                Unsubscribe(interactor);
-                interactor.SetInteractionOverride(this, false);
-            }
-            subscribedInteractors.Clear();
-            occupants.Clear();
-        }
-
-        private void OnTriggerEnter(Collider other)
-        {
-            // Held items are parented beneath the player too, so walking up
-            // the hierarchy alone can mistake an ingredient collider for a
-            // player collider and leave this spawner subscribed after the
-            // ingredient is cut/destroyed. Only the actual hand collider can
-            // establish player occupancy.
-            if (other == null || !other.CompareTag("Hand") || occupants.ContainsKey(other))
-                return;
-
-            LocalCoopItemInteractor interactor = other.GetComponentInParent<LocalCoopItemInteractor>();
-            if (interactor == null)
-                return;
-
-            occupants.Add(other, interactor);
-            if (subscribedInteractors.Add(interactor))
-            {
-                interactor.SetInteractionOverride(this, true);
-                InputAction action = interactor.InteractAction;
-                if (action != null)
-                    action.performed += HandleInteractPressed;
-            }
-        }
-
-        private void OnTriggerExit(Collider other)
-        {
-            if (other == null || !occupants.Remove(other, out LocalCoopItemInteractor interactor))
-                return;
-
-            foreach (LocalCoopItemInteractor remaining in occupants.Values)
-            {
-                if (remaining == interactor)
-                    return;
-            }
-
-            UnregisterInteractor(interactor);
-        }
-
-        private void HandleInteractPressed(InputAction.CallbackContext context)
-        {
-            LocalCoopItemInteractor interactor = context.action != null
-                ? FindInteractorForAction(context.action)
-                : null;
-            if (interactor == null)
-                return;
-
-            if (!IsHandColliderStillInside(interactor))
-            {
-                RemoveInteractorOccupancy(interactor);
-                UnregisterInteractor(interactor);
-                return;
-            }
-
-            if (interactor.IsHoldingItem)
-                return;
-
-            if (prefabToSpawn == null)
-            {
-                Debug.LogWarning($"'{name}' has no prefab assigned to {nameof(IngredientSpawner)}.", this);
-                return;
-            }
-
-            Transform holder = interactor.ItemHolder;
-            if (holder == null)
-            {
-                Debug.LogWarning($"The nearby player '{interactor.name}' has no item holder assigned.", interactor);
-                return;
-            }
-
-            GameObject spawned = Instantiate(prefabToSpawn, holder.position, holder.rotation);
-            if (!interactor.TryHoldItem(spawned.transform))
-                Destroy(spawned);
-        }
-
-        private LocalCoopItemInteractor FindInteractorForAction(InputAction action)
-        {
-            foreach (LocalCoopItemInteractor interactor in subscribedInteractors)
-            {
-                if (interactor != null && interactor.InteractAction == action)
-                    return interactor;
-            }
-
-            return null;
-        }
-
-        private bool IsHandColliderStillInside(LocalCoopItemInteractor interactor)
-        {
-            if (spawnArea == null || !spawnArea.enabled || !spawnArea.gameObject.activeInHierarchy)
-                return false;
-
-            Bounds spawnBounds = spawnArea.bounds;
-            foreach (KeyValuePair<Collider, LocalCoopItemInteractor> occupant in occupants)
-            {
-                Collider handCollider = occupant.Key;
-                if (occupant.Value == interactor && handCollider != null && handCollider.enabled &&
-                    handCollider.gameObject.activeInHierarchy && handCollider.CompareTag("Hand") &&
-                    spawnBounds.Intersects(handCollider.bounds))
-                    return true;
-            }
-
-            return false;
-        }
-
-        private void RemoveInteractorOccupancy(LocalCoopItemInteractor interactor)
-        {
-            List<Collider> collidersToRemove = new();
-            foreach (KeyValuePair<Collider, LocalCoopItemInteractor> occupant in occupants)
-            {
-                if (occupant.Value == interactor)
-                    collidersToRemove.Add(occupant.Key);
-            }
-
-            foreach (Collider handCollider in collidersToRemove)
-                occupants.Remove(handCollider);
-        }
-
-        private void UnregisterInteractor(LocalCoopItemInteractor interactor)
-        {
-            if (subscribedInteractors.Remove(interactor))
-            {
-                Unsubscribe(interactor);
-                interactor.SetInteractionOverride(this, false);
-            }
-        }
-
-        private void Unsubscribe(LocalCoopItemInteractor interactor)
-        {
-            if (interactor != null && interactor.InteractAction != null)
-                interactor.InteractAction.performed -= HandleInteractPressed;
+            ActiveSpawners.Remove(this);
         }
 
         private void OnValidate()
         {
             if (spawnArea == null)
                 spawnArea = GetComponent<Collider>();
+        }
+
+        private bool Overlaps(IReadOnlyList<Collider> handColliders)
+        {
+            if (spawnArea == null || !spawnArea.enabled || !spawnArea.gameObject.activeInHierarchy)
+                return false;
+
+            Transform areaTransform = spawnArea.transform;
+
+            for (int i = 0; i < handColliders.Count; i++)
+            {
+                Collider hand = handColliders[i];
+                if (hand == null || !hand.enabled || !hand.gameObject.activeInHierarchy)
+                    continue;
+
+                Transform handTransform = hand.transform;
+
+                bool overlapping;
+                if (SupportsPenetration(spawnArea) && SupportsPenetration(hand))
+                {
+                    // Real shape-vs-shape test (not AABB).
+                    overlapping = Physics.ComputePenetration(
+                        spawnArea, areaTransform.position, areaTransform.rotation,
+                        hand, handTransform.position, handTransform.rotation,
+                        out _, out _);
+                }
+                else
+                {
+                    // Fallback for collider types ComputePenetration can't handle.
+                    overlapping = spawnArea.bounds.Intersects(hand.bounds);
+                }
+
+                if (overlapping)
+                    return true;
+            }
+
+            return false;
+        }
+
+        private static bool SupportsPenetration(Collider collider)
+        {
+            return collider is BoxCollider
+                   || collider is SphereCollider
+                   || collider is CapsuleCollider
+                   || (collider is MeshCollider mesh && mesh.convex);
+        }
+
+        /// <summary>Spawns the configured prefab straight into the interactor's hand.</summary>
+        public bool TrySpawnFor(LocalCoopItemInteractor interactor)
+        {
+            if (interactor == null || interactor.IsHoldingItem)
+                return false;
+
+            if (prefabToSpawn == null)
+            {
+                Debug.LogWarning($"'{name}' has no prefab assigned to {nameof(IngredientSpawner)}.", this);
+                return false;
+            }
+
+            Transform holder = interactor.ItemHolder;
+            if (holder == null)
+            {
+                Debug.LogWarning($"The nearby player '{interactor.name}' has no item holder assigned.", interactor);
+                return false;
+            }
+
+            GameObject spawned = Instantiate(prefabToSpawn, holder.position, holder.rotation);
+            if (!interactor.TryHoldItem(spawned.transform))
+            {
+                Destroy(spawned);
+                return false;
+            }
+
+            return true;
         }
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
 namespace ChefGame.Input
-{ // testing testin do you hear me? ich bin fertig
+{
     /// <summary>
     /// Local co-op movement for a player hand using a keyboard layout or gamepad.
     /// Movement stays within the Main Camera's viewport and a configurable
@@ -15,7 +15,6 @@ namespace ChefGame.Input
     public sealed class LocalCoopPlayerController : MonoBehaviour
     {
         private static readonly List<LocalCoopPlayerController> GamepadControllers = new();
-        
 
         public enum InputScheme
         {
@@ -41,6 +40,8 @@ namespace ChefGame.Input
         [SerializeField, Range(0f, 0.25f), Tooltip("Vertical edge margin as a fraction of the viewport.")]
         private float screenEdgePadding = 0.03f;
 
+        private const int MaxClampIterations = 4;
+
         private InputActionAsset runtimeActions;
         private InputActionMap gameplayMap;
         private InputAction moveAction;
@@ -56,7 +57,7 @@ namespace ChefGame.Input
 
         public InputAction InteractAction => interactAction;
         public InputAction PressAction => pressAction;
-        public InputAction  BookAction => bookAction;
+        public InputAction BookAction => bookAction;
 
         private string BindingGroup => inputScheme switch
         {
@@ -68,8 +69,16 @@ namespace ChefGame.Input
 
         public static event Action OnPressPerformed;
         public static event Action OnAnyInputDetected;
-    
         public static event Action<bool> OnBookHoldToggled;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics()
+        {
+            GamepadControllers.Clear();
+            OnPressPerformed = null;
+            OnAnyInputDetected = null;
+            OnBookHoldToggled = null;
+        }
 
         private void Awake()
         {
@@ -94,8 +103,6 @@ namespace ChefGame.Input
                 enabled = false;
                 return;
             }
-            
-            
 
             // Each player gets a private copy so its scheme mask and device
             // filter cannot affect the other player.
@@ -108,8 +115,7 @@ namespace ChefGame.Input
             forwardAction = gameplayMap.FindAction("Forward", true);
             interactAction = gameplayMap.FindAction("Interact", true);
             pressAction = gameplayMap.FindAction("Press", true);
-            bookAction = gameplayMap.FindAction("Book", true); 
-
+            bookAction = gameplayMap.FindAction("Book", true);
         }
 
         private void OnEnable()
@@ -130,18 +136,15 @@ namespace ChefGame.Input
                 gameplayMap.bindingMask = InputBinding.MaskByGroup(BindingGroup);
                 gameplayMap.Enable();
             }
-            
+
             if (pressAction != null)
-            {
                 pressAction.started += OnPressAction;
-            }
 
             if (bookAction != null)
             {
                 bookAction.performed += OnBookStarted;
                 bookAction.canceled += OnBookCanceled;
             }
-            
         }
 
         private void OnDisable()
@@ -153,17 +156,21 @@ namespace ChefGame.Input
 
             if (GamepadControllers.Remove(this))
                 ReassignGamepads();
-            
+
             if (pressAction != null)
-            {
                 pressAction.started -= OnPressAction;
-            }
 
             if (bookAction != null)
             {
                 bookAction.performed -= OnBookStarted;
                 bookAction.canceled -= OnBookCanceled;
             }
+        }
+
+        private void OnDestroy()
+        {
+            if (runtimeActions != null)
+                Destroy(runtimeActions);
         }
 
         private void HandleDeviceChange(InputDevice device, InputDeviceChange change)
@@ -249,6 +256,7 @@ namespace ChefGame.Input
                                (backwardAction.IsPressed() ? 1f : 0f);
             float deltaTime = Time.fixedDeltaTime;
             Vector3 currentVelocity = movementRigidbody.linearVelocity;
+
             if (planarInput.sqrMagnitude > 0.0001f || Mathf.Abs(depthInput) > 0.0001f)
             {
                 OnAnyInputDetected?.Invoke();
@@ -282,150 +290,137 @@ namespace ChefGame.Input
             Vector3 boundaryCorrection = clampedPosition - proposedPosition;
             if (boundaryCorrection.sqrMagnitude > 0.000001f)
             {
-                //Vector3 inwardDirection = boundaryCorrection.normalized;
-                //float outwardSpeed = Vector3.Dot(currentVelocity, inwardDirection);
-                //if (outwardSpeed < 0f)
-                    //currentVelocity -= inwardDirection * outwardSpeed;
-
-                // Correct position only when the hand reaches its depth or
+                // Correct the velocity only when the hand reaches its depth or
                 // camera boundary; ordinary movement is handled by PhysX.
-                //movementRigidbody.position = clampedPosition;
                 currentVelocity = (clampedPosition - movementRigidbody.position) / deltaTime;
             }
 
             movementRigidbody.linearVelocity = currentVelocity;
         }
 
-        private const int MaxClampIterations = 4;
-
-private Vector3 ClampToScreen(Vector3 position)
-{
-    if (movementCamera == null)
-        return position;
-
-    Vector3 result = position;
-
-    for (int i = 0; i < MaxClampIterations; i++)
-    {
-        if (!TryGetViewportRect(result, out Vector2 min, out Vector2 max, out Vector3 pivotViewport))
-            return result;
-
-        float horizontalCorrection = 0f;
-        if (clampHorizontalToScreen)
+        private Vector3 ClampToScreen(Vector3 position)
         {
-            if (min.x < horizontalScreenEdgePadding)
-                horizontalCorrection = horizontalScreenEdgePadding - min.x;
-            else if (max.x > 1f - horizontalScreenEdgePadding)
-                horizontalCorrection = 1f - horizontalScreenEdgePadding - max.x;
+            if (movementCamera == null)
+                return position;
+
+            Vector3 result = position;
+
+            for (int i = 0; i < MaxClampIterations; i++)
+            {
+                if (!TryGetViewportRect(result, out Vector2 min, out Vector2 max, out Vector3 pivotViewport))
+                    return result;
+
+                float horizontalCorrection = 0f;
+                if (clampHorizontalToScreen)
+                {
+                    if (min.x < horizontalScreenEdgePadding)
+                        horizontalCorrection = horizontalScreenEdgePadding - min.x;
+                    else if (max.x > 1f - horizontalScreenEdgePadding)
+                        horizontalCorrection = 1f - horizontalScreenEdgePadding - max.x;
+                }
+
+                float verticalCorrection = 0f;
+                if (min.y < screenEdgePadding)
+                    verticalCorrection = screenEdgePadding - min.y;
+                else if (max.y > 1f - screenEdgePadding)
+                    verticalCorrection = 1f - screenEdgePadding - max.y;
+
+                if (Mathf.Abs(horizontalCorrection) < 0.00001f && Mathf.Abs(verticalCorrection) < 0.00001f)
+                    return result;
+
+                Vector3 adjustedViewport = new Vector3(
+                    pivotViewport.x + horizontalCorrection,
+                    pivotViewport.y + verticalCorrection,
+                    pivotViewport.z);
+
+                // Move the pivot along the camera ray, but keep it on its fixed-Z plane.
+                Ray ray = movementCamera.ViewportPointToRay(adjustedViewport);
+                Plane depthPlane = new Plane(Vector3.forward, new Vector3(0f, 0f, result.z));
+                if (!depthPlane.Raycast(ray, out float distance) || distance < 0f)
+                    return result;
+
+                result = ray.GetPoint(distance);
+            }
+
+            return result;
         }
 
-        float verticalCorrection = 0f;
-        if (min.y < screenEdgePadding)
-            verticalCorrection = screenEdgePadding - min.y;
-        else if (max.y > 1f - screenEdgePadding)
-            verticalCorrection = 1f - screenEdgePadding - max.y;
-
-        if (Mathf.Abs(horizontalCorrection) < 0.00001f && Mathf.Abs(verticalCorrection) < 0.00001f)
-            return result;
-
-        Vector3 adjustedViewport = new Vector3(
-            pivotViewport.x + horizontalCorrection,
-            pivotViewport.y + verticalCorrection,
-            pivotViewport.z);
-
-        // Move the pivot along the camera ray, but keep it on its fixed-Z plane.
-        Ray ray = movementCamera.ViewportPointToRay(adjustedViewport);
-        Plane depthPlane = new Plane(Vector3.forward, new Vector3(0f, 0f, result.z));
-        if (!depthPlane.Raycast(ray, out float distance) || distance < 0f)
-            return result;
-
-        result = ray.GetPoint(distance);
-    }
-
-    return result;
-}
-
-/// <summary>
-/// Viewport rectangle of the hand at the given position. Only the X/Y size of the
-/// hitbox is used (a flat rectangle at the hitbox's depth), so the camera pitch
-/// can't inflate the hand's on-screen size through the collider's Z extent.
-/// </summary>
-private bool TryGetViewportRect(Vector3 position, out Vector2 min, out Vector2 max, out Vector3 pivotViewport)
-{
-    pivotViewport = movementCamera.WorldToViewportPoint(position);
-    min = max = new Vector2(pivotViewport.x, pivotViewport.y);
-
-    if (pivotViewport.z <= movementCamera.nearClipPlane)
-        return false;
-
-    if (screenBoundsCollider == null)
-        return true;
-
-    Bounds bounds = screenBoundsCollider.bounds;
-    Vector3 center = bounds.center + (position - transform.position);
-    Vector3 extents = bounds.extents;
-
-    min = new Vector2(float.PositiveInfinity, float.PositiveInfinity);
-    max = new Vector2(float.NegativeInfinity, float.NegativeInfinity);
-
-    for (int cornerIndex = 0; cornerIndex < 4; cornerIndex++)
-    {
-        Vector3 corner = center + new Vector3(
-            (cornerIndex & 1) == 0 ? -extents.x : extents.x,
-            (cornerIndex & 2) == 0 ? -extents.y : extents.y,
-            0f);
-
-        Vector3 vp = movementCamera.WorldToViewportPoint(corner);
-        if (vp.z <= movementCamera.nearClipPlane)
-            continue;
-
-        min = Vector2.Min(min, new Vector2(vp.x, vp.y));
-        max = Vector2.Max(max, new Vector2(vp.x, vp.y));
-    }
-
-    if (float.IsPositiveInfinity(min.x))
-        min = max = new Vector2(pivotViewport.x, pivotViewport.y);
-
-    return true;
-}
-private void FindScreenBoundsCollider()
-{
-    Collider[] childColliders = GetComponentsInChildren<Collider>();
-    for (int i = 0; i < childColliders.Length; i++)
-    {
-        Collider candidate = childColliders[i];
-        if (candidate != null && candidate.enabled && candidate.CompareTag("Hand"))
+        /// <summary>
+        /// Viewport rectangle of the hand at the given position. Only the X/Y size of the
+        /// hitbox is used (a flat rectangle at the hitbox's depth), so the camera pitch
+        /// can't inflate the hand's on-screen size through the collider's Z extent.
+        /// </summary>
+        private bool TryGetViewportRect(Vector3 position, out Vector2 min, out Vector2 max, out Vector3 pivotViewport)
         {
-            screenBoundsCollider = candidate;
-            return;
+            pivotViewport = movementCamera.WorldToViewportPoint(position);
+            min = max = new Vector2(pivotViewport.x, pivotViewport.y);
+
+            if (pivotViewport.z <= movementCamera.nearClipPlane)
+                return false;
+
+            if (screenBoundsCollider == null)
+                return true;
+
+            Bounds bounds = screenBoundsCollider.bounds;
+            Vector3 center = bounds.center + (position - transform.position);
+            Vector3 extents = bounds.extents;
+
+            min = new Vector2(float.PositiveInfinity, float.PositiveInfinity);
+            max = new Vector2(float.NegativeInfinity, float.NegativeInfinity);
+
+            for (int cornerIndex = 0; cornerIndex < 4; cornerIndex++)
+            {
+                Vector3 corner = center + new Vector3(
+                    (cornerIndex & 1) == 0 ? -extents.x : extents.x,
+                    (cornerIndex & 2) == 0 ? -extents.y : extents.y,
+                    0f);
+
+                Vector3 vp = movementCamera.WorldToViewportPoint(corner);
+                if (vp.z <= movementCamera.nearClipPlane)
+                    continue;
+
+                min = Vector2.Min(min, new Vector2(vp.x, vp.y));
+                max = Vector2.Max(max, new Vector2(vp.x, vp.y));
+            }
+
+            if (float.IsPositiveInfinity(min.x))
+                min = max = new Vector2(pivotViewport.x, pivotViewport.y);
+
+            return true;
+        }
+
+        private void FindScreenBoundsCollider()
+        {
+            Collider[] childColliders = GetComponentsInChildren<Collider>();
+            for (int i = 0; i < childColliders.Length; i++)
+            {
+                Collider candidate = childColliders[i];
+                if (candidate != null && candidate.enabled && candidate.CompareTag("Hand"))
+                {
+                    screenBoundsCollider = candidate;
+                    return;
+                }
+            }
+        }
+
+        private void OnPressAction(InputAction.CallbackContext context)
+        {
+            if (context.started)
+            {
+                OnPressPerformed?.Invoke();
+                OnAnyInputDetected?.Invoke();
+            }
+        }
+
+        private void OnBookStarted(InputAction.CallbackContext context)
+        {
+            OnBookHoldToggled?.Invoke(true);
+            OnAnyInputDetected?.Invoke();
+        }
+
+        private void OnBookCanceled(InputAction.CallbackContext context)
+        {
+            OnBookHoldToggled?.Invoke(false);
         }
     }
-}
-
-private void OnDestroy()
-{
-    if (runtimeActions != null)
-        Destroy(runtimeActions);
-}
-
-    private void OnPressAction(InputAction.CallbackContext context)
-    {
-        if (context.started) {OnPressPerformed?.Invoke(); OnAnyInputDetected?.Invoke();}
-    }
-
-    private void OnBookStarted(InputAction.CallbackContext context)
-    {
-        OnBookHoldToggled?.Invoke(true);
-        OnAnyInputDetected?.Invoke();
-    }
-    
-    private void OnBookCanceled(InputAction.CallbackContext context)
-    {
-        OnBookHoldToggled?.Invoke(false);
-    }
-}
-    
-
-
-
 }
